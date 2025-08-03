@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+echo "Install neovim"
+
+neovim_dir=$HOME/code/neovim
+neovim_version=v0.11.3
+
+git clone -b $neovim_version https://github.com/neovim/neovim.git $neovim_dir
+sudo apt install cmake gettext lua5.1 liblua5.1-0-dev
+
+cd $neovim_dir
+make CMAKE_BUILD_TYPE=RelWithDebInfo
+sudo make install

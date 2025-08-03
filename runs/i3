@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+sudo apt install i3 i3lock xautolock picom  
