@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+echo "Install fzf"
+
+fzf_dir=$HOME/code/fzf
+
+git clone --depth 1 https://github.com/junegunn/fzf.git $fzf_dir
+$fzf_dir/install
+

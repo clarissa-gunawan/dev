@@ -120,3 +120,10 @@ fi
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 export TERMINAL=ghostty
+
+PATH=$PATH:$HOME/.local/scripts
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+eval "$(fzf --bash)"
+
+

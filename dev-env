@@ -81,5 +81,6 @@ copy_file() {
 }
 
 
-copy_dir $script_dir/dotfiles/.config $XDG_CONFIG_HOME
+copy_dir dotfiles/.config $XDG_CONFIG_HOME
+copy_dir dotfiles/.local $HOME/.local
 copy_file $script_dir/dotfiles/.bashrc $HOME
