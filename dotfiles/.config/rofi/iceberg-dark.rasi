@@ -1,0 +1,80 @@
+* {
+  font: "Noto Sans 12";
+  border: 0;
+  padding: 0;
+  spacing: 5;
+  text-color: #84a0c6;
+  background-color: #161821;
+  selected-background: #1e2132;
+  selected-text-color: #89b8c2;
+  alternate-background: #161821;
+  border-radius: 5px;
+  margin: 2;
+}
+
+window {
+  background-color: @background-color;
+  border-radius: 6px;
+}
+
+mainbox {
+  children: [inputbar, listview];
+  spacing: 10;
+  padding: 10;
+}
+
+inputbar {
+  background-color: @alternate-background;
+  text-color: @text-color;
+  padding: 6;
+  border-radius: 3px;
+}
+
+listview {
+  columns: 1;
+  lines: 10;
+  fixed-height: false;
+  background-color: @background-color;
+  spacing: 4;
+  padding: 5 0 0 0;
+  cycle: true;
+  dynamic: true;
+  scrollbar: true;
+  border-radius: 5px;
+}
+
+element {
+  padding: 5 10;
+  border-radius: 3px;
+}
+
+element normal {
+  background-color: transparent;
+  text-color: @text-color;
+}
+
+element selected {
+  background-color: @selected-background;
+  text-color: @selected-text-color;
+}
+
+element alternate {
+  background-color: @alternate-background;
+}
+
+icon {
+  size: 24;
+  border: 0;
+  margin: 0 8 0 0;
+}
+
+entry {
+  padding: 4;
+  text-color: @text-color;
+}
+
+scrollbar {
+  width: 4;
+  border: 0;
+  handle-color: #84a0c6;
+}

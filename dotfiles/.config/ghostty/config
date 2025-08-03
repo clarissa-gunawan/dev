@@ -1,0 +1,7 @@
+theme = iceberg-dark
+# theme = Mirage
+# font-family = "DejaVu Sans Mono"
+# font-family = "Ubuntu Sans Mono"
+font-size = 16
+background-opacity = 0.95
+gtk-titlebar = true
