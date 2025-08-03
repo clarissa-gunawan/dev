@@ -37,7 +37,7 @@ while [[ $# > 0 ]]; do
 done
 
 # Header
-echo -e "${BOLD}${BLUE}Script Runner${RESET}"
+echo -e "${BOLD}${BLUE}Installation Script Runner${RESET}"
 echo -e "Directory: ${CYAN}${script_dir}${RESET}"
 
 if [[ ${#filters[@]} -gt 0 ]]; then
