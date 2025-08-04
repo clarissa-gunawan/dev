@@ -6,7 +6,9 @@ neovim_dir=$HOME/code/neovim
 neovim_version=v0.11.3
 
 git clone -b $neovim_version --depth 1 https://github.com/neovim/neovim.git $neovim_dir
-sudo apt install cmake gettext lua5.1 liblua5.1-0-dev
+sudo apt install gcc make cmake gettext \
+                 lua5.1 liblua5.1-0-dev \
+                 ripgrep unzip git xclip
 
 cd $neovim_dir
 make CMAKE_BUILD_TYPE=RelWithDebInfo
