@@ -121,9 +121,11 @@ fi
 
 export TERMINAL=ghostty
 
-PATH=$PATH:$HOME/.local/scripts
+PATH="$PATH":"$HOME/.local/scripts/"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 eval "$(fzf --bash)"
+
+bind '"\C-f":"tmux-sessionizer\n"'
 
 
