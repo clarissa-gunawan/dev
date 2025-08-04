@@ -123,8 +123,13 @@ export TERMINAL=ghostty
 
 PATH="$PATH":"$HOME/.local/scripts/"
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+alias bat="batcat"
+alias cat="batcat"
+
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash
 eval "$(fzf --bash)"
+alias fzf="fzf --preview='batcat {}'"
+
 
 bind '"\C-f":"tmux-sessionizer\n"'
 

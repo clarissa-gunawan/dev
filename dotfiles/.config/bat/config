@@ -1,0 +1,7 @@
+--color="always"
+--theme="Nord"
+--style="numbers,changes,header,snip"
+--line-range=:500
+--map-syntax "*.rasi:Less"
+--map-syntax "config:Bourne Again Shell (bash)"
+--map-syntax "*.conf:Bourne Again Shell (bash)"

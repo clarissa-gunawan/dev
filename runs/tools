@@ -3,7 +3,10 @@
 echo "Install fzf"
 
 fzf_dir=$HOME/code/fzf
-
 git clone --depth 1 https://github.com/junegunn/fzf.git $fzf_dir
-$fzf_dir/install
+$fzf_dir/install --xdg --key-bindings --completion --update-rc
 
+
+echo "Install bat"
+
+sudo apt install bat
