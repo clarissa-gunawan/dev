@@ -133,4 +133,4 @@ alias fzf="fzf --preview='batcat {}'"
 
 bind '"\C-f":"tmux-sessionizer\n"'
 
-
+alias vim="nvim"

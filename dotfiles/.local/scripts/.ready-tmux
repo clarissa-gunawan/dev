@@ -3,7 +3,7 @@
 tmux rename-window "term"
 
 tmux new-window -n "nvim"
-tmux send-keys -t "nvim" "nvim" ^M
+tmux send-keys -t "nvim" "nvim ." ^M
 
 tmux new-window -n "git"
 tmux send-keys -t "git" "git status" ^M 
