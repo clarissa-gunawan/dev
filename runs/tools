@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 
 echo "Install fzf"
-
 fzf_dir=$HOME/code/fzf
 git clone --depth 1 https://github.com/junegunn/fzf.git $fzf_dir
 $fzf_dir/install --xdg --key-bindings --completion --update-rc
 
 
-echo "Install bat"
-
-sudo apt install bat
+echo "Install everything else"
+sudo apt install bat xclip ripgrep
