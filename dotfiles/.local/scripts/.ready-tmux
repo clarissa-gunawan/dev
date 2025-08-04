@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
-if [[ -x ".ready-tmux"  ]] then
-	./.ready-tmux 
-elif [[ -x "$HOME/.ready-tmux"  ]]; then
-	~/.ready-tmux 
-fi
+tmux rename-window "term"
 
-clear
+tmux new-window -n "nvim"
+tmux send-keys -t "nvim" "nvim" ^M
+
+tmux new-window -n "git"
+tmux send-keys -t "git" "git status" ^M 
+
+tmux select-window -t "nvim"

@@ -1,3 +1,10 @@
 #!/usr/bin/env bash
 
+if [[ -x ".ready-tmux" ]]; then
+    ./.ready-tmux
+elif [[ -x "$HOME/.ready-tmux" ]]; then
+    $HOME/.ready-tmux
+elif [[ -x "$HOME/.local/scripts/.ready-tmux" ]]; then
+    $HOME/.local/scripts/.ready-tmux
+fi
 clear
