@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Install flatpak"
+sudo apt install -y flatpak gnome-software-plugin-flatpak
+
+echo "Install zen browser"
 flatpak install -y app/app.zen_browser.zen/x86_64/stable

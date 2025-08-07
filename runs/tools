@@ -7,4 +7,4 @@ $fzf_dir/install --xdg --key-bindings --completion --update-rc
 
 
 echo "Install bat"
-sudo apt install bat 
+sudo apt install -y bat
