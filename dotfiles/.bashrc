@@ -121,7 +121,6 @@ fi
 
 export TERMINAL=ghostty
 
-PATH="$PATH":"$HOME/.local/scripts/"
 
 alias bat="batcat"
 alias cat="batcat"
@@ -130,7 +129,9 @@ alias cat="batcat"
 eval "$(fzf --bash)"
 alias fzf="fzf --preview='batcat {}'"
 
-
+PATH="$PATH":"$HOME/.local/scripts/"
 bind '"\C-f":"tmux-sessionizer\n"'
 
 alias vim="nvim"
+
+eval "$(task --completion bash)"
