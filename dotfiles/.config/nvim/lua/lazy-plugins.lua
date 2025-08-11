@@ -11,4 +11,5 @@ require("lazy").setup({
 	require("cgunawan.plugins.vimbegood"),
 	require("cgunawan.plugins.trouble"),
 	require("cgunawan.plugins.zenmode"),
+	require("cgunawan.plugins.oil"),
 })
