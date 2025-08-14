@@ -83,7 +83,6 @@ vim.opt.backup = false
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
 
-vim.opt.hlsearch = false
 vim.opt.incsearch = true
 
 vim.opt.termguicolors = true
@@ -91,5 +90,60 @@ vim.opt.termguicolors = true
 vim.opt.isfname:append("@-@")
 
 vim.opt.colorcolumn = "80"
+
+-- Smart hlsearch management - only triggers when needed
+vim.opt.hlsearch = true
+
+local hlsearch_group = vim.api.nvim_create_augroup("smart_hlsearch", { clear = true })
+
+-- Turn ON hlsearch when entering search mode
+vim.api.nvim_create_autocmd("CmdlineEnter", {
+	group = hlsearch_group,
+	pattern = { "/", "?" },
+	callback = function()
+		vim.opt.hlsearch = true
+	end,
+})
+
+-- Turn OFF hlsearch when leaving search mode without executing
+vim.api.nvim_create_autocmd("CmdlineLeave", {
+	group = hlsearch_group,
+	pattern = { "/", "?" },
+	callback = function()
+		-- Only turn off if no search was actually performed
+		vim.schedule(function()
+			if vim.fn.getreg("/") == "" then
+				vim.cmd("nohlsearch")
+			end
+		end)
+	end,
+})
+
+-- Keep hlsearch ON and ensure it's active for search navigation
+local search_nav_keys = { "n", "N", "*", "#" }
+for _, key in ipairs(search_nav_keys) do
+	vim.keymap.set("n", key, function()
+		vim.opt.hlsearch = true
+		return key
+	end, { expr = true, desc = "Navigate search with hlsearch" })
+end
+
+-- Turn OFF hlsearch when doing non-search activities
+-- Only trigger on common movement/editing actions
+local exit_search_keys = { "i", "a", "I", "A", "o", "O", "c", "C", "s", "S" }
+for _, key in ipairs(exit_search_keys) do
+	vim.keymap.set("n", key, function()
+		vim.cmd("nohlsearch")
+		return key
+	end, { expr = true, desc = "Exit search mode" })
+end
+
+-- Optional: Clear hlsearch with Escape (common pattern)
+vim.keymap.set("n", "<Esc>", function()
+	if vim.v.hlsearch == 1 then
+		vim.cmd("nohlsearch")
+	end
+	return "<Esc>"
+end, { expr = true, silent = true, desc = "Clear search highlight" })
 
 -- vim: ts=2 sts=2 sw=2 et
