@@ -1,5 +1,5 @@
 require("lazy").setup({
-	require("cgunawan.plugins.chosen-colorscheme"),
+	require("cgunawan.plugins.colorscheme"),
 	require("cgunawan.plugins.telescope"),
 	require("cgunawan.plugins.treesitter"),
 	require("cgunawan.plugins.undotree"),
@@ -12,4 +12,5 @@ require("lazy").setup({
 	require("cgunawan.plugins.trouble"),
 	require("cgunawan.plugins.zenmode"),
 	require("cgunawan.plugins.oil"),
+	require("cgunawan.plugins.which-key"),
 })
