@@ -3,12 +3,12 @@ return {
 		"stevearc/oil.nvim",
 		---@module 'oil'
 		opts = {},
-		dependencies = { "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
+		dependencies = { "nvim-tree/nvim-web-devicons" },
 		-- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
 		lazy = false,
 		config = function()
 			require("oil").setup({
-				columns = { "icons" },
+				columns = { "icon" },
 				view_options = {
 					-- Show files and directories that start with "."
 					show_hidden = true,
