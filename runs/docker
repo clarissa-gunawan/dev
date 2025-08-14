@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+DOWNLOAD_FOLDER=/tmp
+INSTALL_FOLDER=~/.local/bin
+
+echo "Install docker dependencies"
+if  ! (command -v docker &>/dev/null && command -v docker-compose &>/dev/null); then
+    echo "Installing docker and docker compose..."
+    for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+
+    # Add Docker's official GPG key:
+    sudo apt-get update
+    sudo apt-get install -y ca-certificates curl
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+    # Add the repository to Apt sources:
+    echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+        $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+        sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update
+
+    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+fi
+
+
+echo "Install lazydocker: tui for docker"
+curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
+
+
+echo "Install dive: explore docker image and layer content"
+# https://github.com/wagoodman/dive
+DIVE_VERSION=$(curl -sL "https://api.github.com/repos/wagoodman/dive/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+curl -fL -o "$DOWNLOAD_FOLDER/dive_${DIVE_VERSION}_linux_amd64.deb" \
+     "https://github.com/wagoodman/dive/releases/download/v${DIVE_VERSION}/dive_${DIVE_VERSION}_linux_amd64.deb"
+sudo apt install -y $DOWNLOAD_FOLDER/dive_${DIVE_VERSION}_linux_amd64.deb
+
+
+echo "Install slim: optimize containers"
+# https://github.com/slimtoolkit/slim
+curl -sL https://raw.githubusercontent.com/slimtoolkit/slim/master/scripts/install-slim.sh | sudo -E bash -
