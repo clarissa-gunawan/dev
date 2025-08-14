@@ -6,6 +6,6 @@ tmux new-window -n "nvim"
 tmux send-keys -t "nvim" "nvim ." ^M
 
 tmux new-window -n "git"
-tmux send-keys -t "git" "git status" ^M 
+tmux send-keys -t "git" "lazygit" ^M
 
 tmux select-window -t "nvim"
