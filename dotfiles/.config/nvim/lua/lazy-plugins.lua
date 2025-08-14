@@ -3,6 +3,7 @@ require("lazy").setup({
 	require("cgunawan.plugins.telescope"),
 	require("cgunawan.plugins.treesitter"),
 	require("cgunawan.plugins.undotree"),
+	require("cgunawan.plugins.neo-tree"),
 	require("cgunawan.plugins.lualine"),
 	require("cgunawan.plugins.todo-comments"),
 	require("cgunawan.plugins.autopairs"),
