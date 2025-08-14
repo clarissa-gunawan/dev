@@ -70,14 +70,14 @@ log_execute() {
 execute() {
 	local script_name="$1"
 	log_execute "Executing: $script_name"
-	
+
 	log "./runs/$script_name"
 	if [[ $dry == "1" ]]; then
 		successful_scripts+=("$script_name")
 		((success_count++))
 		return 0
 	fi
-	
+
 	if "./runs/$script_name"; then
 		echo -e "${GREEN}${CHECK}${RESET} ${GREEN}Success${RESET}"
 		successful_scripts+=("$script_name")
@@ -103,7 +103,7 @@ fi
 
 for script in $scripts; do
 	script_name=$(basename "$script")
-	
+
 	matches_filter=false
 	if [[ ${#filters[@]} -eq 0 ]]; then
 		matches_filter=true
@@ -122,7 +122,7 @@ for script in $scripts; do
 		echo ""
 		continue
 	fi
-	
+
 	execute "$script_name"
 	((executed_count++))
 	echo ""

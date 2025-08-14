@@ -9,5 +9,6 @@ $fzf_dir/install --xdg --key-bindings --completion --update-rc
 echo "Install bat"
 sudo apt install -y bat
 
+
 echo "Install task"
 sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
