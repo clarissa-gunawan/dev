@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+# Script to install and fix Flameshot GUI mode in i3wm
+# This installs Flameshot and modifies the desktop entry to launch GUI mode by default
+# https://flameshot.org/
+
+set -e  # Exit on any error
+
+# Install Flameshot
+echo "Installing Flameshot..."
+sudo apt update
+sudo apt install -y flameshot
+echo "✓ Flameshot installed successfully"
+echo ""
+
+# Define paths
+SYSTEM_DESKTOP="/usr/share/applications/org.flameshot.Flameshot.desktop"
+USER_DESKTOP_DIR="$HOME/.local/share/applications"
+USER_DESKTOP="$USER_DESKTOP_DIR/org.flameshot.Flameshot.desktop"
+
+echo "Fixing Flameshot for i3wm..."
+
+# Check if system desktop file exists
+if [[ ! -f "$SYSTEM_DESKTOP" ]]; then
+    echo "Error: Flameshot desktop file not found at $SYSTEM_DESKTOP"
+    echo "Make sure Flameshot is installed."
+    exit 1
+fi
+
+# Create user applications directory if it doesn't exist
+mkdir -p "$USER_DESKTOP_DIR"
+
+# Copy the desktop file to user directory
+echo "Copying desktop file to user directory..."
+cp "$SYSTEM_DESKTOP" "$USER_DESKTOP"
+
+# Modify the Exec line to include 'gui'
+echo "Modifying desktop entry to launch GUI mode..."
+sed -i 's/^Exec=flameshot$/Exec=flameshot gui/' "$USER_DESKTOP"
+
+# Verify the change was made
+if grep -q "^Exec=flameshot gui$" "$USER_DESKTOP"; then
+    echo "✓ Successfully modified Flameshot desktop entry"
+    echo "✓ Flameshot will now launch in GUI mode when clicked"
+    echo ""
+    echo "You may need to:"
+    echo "  1. Restart your desktop environment or logout/login"
+    echo "  2. Clear your application cache if using a launcher like rofi/dmenu"
+else
+    echo "✗ Failed to modify desktop entry"
+    echo "Please check $USER_DESKTOP manually"
+    exit 1
+fi
+
+echo "Done! Flameshot should now open in GUI mode when launched from i3."
