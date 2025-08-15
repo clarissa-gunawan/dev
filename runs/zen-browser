@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 echo "Install flatpak"
+# https://flatpak.org/
 sudo apt install -y flatpak gnome-software-plugin-flatpak
 flatpak remote-add --if-not-exists --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 echo "Install zen browser"
+# https://zen-browser.app/
 flatpak install -y --user app/app.zen_browser.zen/x86_64/stable

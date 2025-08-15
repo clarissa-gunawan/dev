@@ -44,11 +44,11 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 --  Try it with `yap` in normal mode
 --  See `:help vim.hl.on_yank()`
 vim.api.nvim_create_autocmd("TextYankPost", {
-	desc = "Highlight when yanking (copying) text",
-	group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
-	callback = function()
-		vim.hl.on_yank()
-	end,
+  desc = "Highlight when yanking (copying) text",
+  group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
+  callback = function()
+    vim.hl.on_yank()
+  end,
 })
 
 -- Create a Visual Block, then use J and K to move it (no more yank pasta)
@@ -69,10 +69,10 @@ vim.keymap.set("n", "N", "Nzzzv")
 
 -- Vim Be Good (start and stop) learning how to Vim
 vim.keymap.set("n", "<leader>vwm", function()
-	require("vim-with-me").StartVimWithMe()
+  require("vim-with-me").StartVimWithMe()
 end)
 vim.keymap.set("n", "<leader>svwm", function()
-	require("vim-with-me").StopVimWithMe()
+  require("vim-with-me").StopVimWithMe()
 end)
 vim.keymap.set("n", "<leader>pv", ":Vex<CR>", { noremap = true, silent = true, desc = "Create project view window" })
 
@@ -114,10 +114,10 @@ vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
 -- Reload Configuration
 vim.keymap.set(
-	"n",
-	"<leader><CR>",
-	":so ~/.config/nvim/init.lua",
-	{ noremap = true, silent = true, desc = "Reload configuration" }
+  "n",
+  "<leader><CR>",
+  ":so ~/.config/nvim/init.lua",
+  { noremap = true, silent = true, desc = "Reload configuration" }
 )
 
 -- vim: ts=2 sts=2 sw=2 et

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 echo "Install neovim"
+#https://github.com/neovim/neovim
 
 neovim_dir=$HOME/code/neovim
 neovim_version=v0.11.3

@@ -15,10 +15,10 @@ dry="0"
 
 # Parse arguments
 while [[ $# > 0 ]]; do
-	if [[ $1 == "--dry" ]]; then
-		dry="1"
-	fi
-	shift
+  if [[ $1 == "--dry" ]]; then
+    dry="1"
+  fi
+  shift
 done
 
 # Header
@@ -26,60 +26,57 @@ echo -e "${BOLD}${BLUE}Dev Env Copier${RESET}"
 echo -e "Directory: ${CYAN}${script_dir}${RESET}"
 
 if [ -z "$XDG_CONFIG_HOME" ]; then
-	echo -e "XDG_CONFIG_HOME: ${CYAN}~/.config (default)${RESET}"
-	XDG_CONFIG_HOME=$HOME/.config
+  echo -e "XDG_CONFIG_HOME: ${CYAN}~/.config (default)${RESET}"
+  XDG_CONFIG_HOME=$HOME/.config
 else
-	echo -e "XDG_CONFIG_HOME: ${CYAN}${XDG_CONFIG_HOME}${RESET}"
+  echo -e "XDG_CONFIG_HOME: ${CYAN}${XDG_CONFIG_HOME}${RESET}"
 fi
 
-
 if [[ $dry == "1" ]]; then
-	echo -e "Mode: ${YELLOW}${BOLD}DRY RUN${RESET}"
+  echo -e "Mode: ${YELLOW}${BOLD}DRY RUN${RESET}"
 fi
 echo ""
 
-
 log() {
-	if [[ $dry == "1" ]]; then
-		echo -e "${YELLOW}[DRY]${RESET} $@"
-	else
-		echo -e "${BLUE}[RUN]${RESET} $@"
-	fi
+  if [[ $dry == "1" ]]; then
+    echo -e "${YELLOW}[DRY]${RESET} $@"
+  else
+    echo -e "${BLUE}[RUN]${RESET} $@"
+  fi
 }
 
 execute() {
-	log "Execute $@"
-	if [[ $dry == "1" ]]; then
-		return 0
-	fi
-	"$@"	
+  log "Execute $@"
+  if [[ $dry == "1" ]]; then
+    return 0
+  fi
+  "$@"
 }
 
 copy_dir() {
-	from=$1
-	to=$2
+  from=$1
+  to=$2
 
-	# Pushes a directory into a location stack, then changes the location and then pop the directory
-	pushd $from > /dev/null
-	(
-		dirs=$(find . -maxdepth 1 -mindepth 1 -type d)
-		for dir in $dirs; do
-			execute rm -rf $to/$dir
-			execute cp -r $dir $to/$dir
-		done
-	)
-	popd > /dev/null
+  # Pushes a directory into a location stack, then changes the location and then pop the directory
+  pushd $from >/dev/null
+  (
+    dirs=$(find . -maxdepth 1 -mindepth 1 -type d)
+    for dir in $dirs; do
+      execute rm -rf $to/$dir
+      execute cp -r $dir $to/$dir
+    done
+  )
+  popd >/dev/null
 }
 
 copy_file() {
-	from=$1
-	to=$2
-	name=$(basename $from)
+  from=$1
+  to=$2
+  name=$(basename $from)
 
-	execute rm $to/$name
-	execute cp $from $to/$name
+  execute rm $to/$name
+  execute cp $from $to/$name
 }
-
 
 copy_dir dotfiles/.config $XDG_CONFIG_HOME
 copy_dir dotfiles/.local $HOME/.local

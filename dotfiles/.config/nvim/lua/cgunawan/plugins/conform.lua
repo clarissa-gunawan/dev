@@ -1,16 +1,16 @@
 return {
   { -- Autoformat
-    'stevearc/conform.nvim',
-    event = { 'BufWritePre' },
-    cmd = { 'ConformInfo' },
+    "stevearc/conform.nvim",
+    event = { "BufWritePre" },
+    cmd = { "ConformInfo" },
     keys = {
       {
-        '<leader>f',
+        "<leader>f",
         function()
-          require('conform').format { async = true, lsp_format = 'fallback' }
+          require("conform").format { async = true, lsp_format = "fallback" }
         end,
-        mode = '',
-        desc = '[F]ormat buffer',
+        mode = "",
+        desc = "[F]ormat buffer",
       },
     },
     opts = {
@@ -25,12 +25,12 @@ return {
         else
           return {
             timeout_ms = 500,
-            lsp_format = 'fallback',
+            lsp_format = "fallback",
           }
         end
       end,
       formatters_by_ft = {
-        lua = { 'stylua' },
+        lua = { "stylua" },
         -- Conform can also run multiple formatters sequentially
         python = { "ruff_fix", "ruff_format", "ruff_organize_imports", "black" },
         cpp = { "clang-format" },
@@ -40,9 +40,17 @@ return {
         yaml = { "yamlfmt", "yamlfix", stop_after_first = true },
         json = { "prettierd", "prettier", stop_after_first = true },
         markdown = { "prettierd", "prettier", stop_after_first = true },
+        sh = { "shfmt" },
         -- Apply to all files as fallback
         ["_"] = { "trim_whitespace", "trim_newlines" },
         -- You can use 'stop_after_first' to run the first available formatter from the list
+      },
+      formatters = {
+        shfmt = {
+          command = "shfmt",
+          args = { "-i", "2", "-ci", "-w", "80" }, -- Example args: indent 2 spaces, compact if-statements
+          stdin = true, -- shfmt can work with stdin for formatting
+        },
       },
     },
   },

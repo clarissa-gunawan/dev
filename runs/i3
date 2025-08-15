@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
+echo "Install i3"
+# https://github.com/i3/i3
 sudo apt install -y i3 i3lock xautolock picom

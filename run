@@ -28,12 +28,12 @@ failed_scripts=()
 
 # Parse arguments
 while [[ $# > 0 ]]; do
-	if [[ $1 == "--dry" ]]; then
-		dry="1"
-	else
-		filters+=("$1")
-	fi
-	shift
+  if [[ $1 == "--dry" ]]; then
+    dry="1"
+  else
+    filters+=("$1")
+  fi
+  shift
 done
 
 # Header
@@ -41,54 +41,54 @@ echo -e "${BOLD}${BLUE}Installation Script Runner${RESET}"
 echo -e "Directory: ${CYAN}${script_dir}${RESET}"
 
 if [[ ${#filters[@]} -gt 0 ]]; then
-	echo -e "Filter: ${CYAN}${filters[*]}${RESET}"
+  echo -e "Filter: ${CYAN}${filters[*]}${RESET}"
 else
-	echo -e "Filter: ${CYAN}\"\"${RESET}"
+  echo -e "Filter: ${CYAN}\"\"${RESET}"
 fi
 
 if [[ $dry == "1" ]]; then
-	echo -e "Mode: ${YELLOW}${BOLD}DRY RUN${RESET}"
+  echo -e "Mode: ${YELLOW}${BOLD}DRY RUN${RESET}"
 fi
 echo ""
 
 log() {
-	if [[ $dry == "1" ]]; then
-		echo -e "${YELLOW}[DRY]${RESET} $@"
-	else
-		echo -e "${BLUE}[RUN]${RESET} $@"
-	fi
+  if [[ $dry == "1" ]]; then
+    echo -e "${YELLOW}[DRY]${RESET} $@"
+  else
+    echo -e "${BLUE}[RUN]${RESET} $@"
+  fi
 }
 
 log_skip() {
-	echo -e "${GRAY}${SKIP}${RESET} ${GRAY}$@${RESET}"
+  echo -e "${GRAY}${SKIP}${RESET} ${GRAY}$@${RESET}"
 }
 
 log_execute() {
-	echo -e "${GREEN}${ARROW}${RESET} ${BOLD}$@${RESET}"
+  echo -e "${GREEN}${ARROW}${RESET} ${BOLD}$@${RESET}"
 }
 
 execute() {
-	local script_name="$1"
-	log_execute "Executing: $script_name"
+  local script_name="$1"
+  log_execute "Executing: $script_name"
 
-	log "./runs/$script_name"
-	if [[ $dry == "1" ]]; then
-		successful_scripts+=("$script_name")
-		((success_count++))
-		return 0
-	fi
+  log "./runs/$script_name"
+  if [[ $dry == "1" ]]; then
+    successful_scripts+=("$script_name")
+    ((success_count++))
+    return 0
+  fi
 
-	if "./runs/$script_name"; then
-		echo -e "${GREEN}${CHECK}${RESET} ${GREEN}Success${RESET}"
-		successful_scripts+=("$script_name")
-		((success_count++))
-		return 0
-	else
-		echo -e "${RED}${CROSS}${RESET} ${RED}Failed${RESET}"
-		failed_scripts+=("$script_name")
-		((failed_count++))
-		return 1
-	fi
+  if "./runs/$script_name"; then
+    echo -e "${GREEN}${CHECK}${RESET} ${GREEN}Success${RESET}"
+    successful_scripts+=("$script_name")
+    ((success_count++))
+    return 0
+  else
+    echo -e "${RED}${CROSS}${RESET} ${RED}Failed${RESET}"
+    failed_scripts+=("$script_name")
+    ((failed_count++))
+    return 1
+  fi
 }
 
 cd "$script_dir"
@@ -97,56 +97,56 @@ cd "$script_dir"
 scripts=$(find ./runs -maxdepth 1 -mindepth 1 -executable -type f 2>/dev/null)
 
 if [[ -z "$scripts" ]]; then
-	echo -e "${YELLOW}No executable scripts found in ./runs${RESET}"
-	exit 1
+  echo -e "${YELLOW}No executable scripts found in ./runs${RESET}"
+  exit 1
 fi
 
 for script in $scripts; do
-	script_name=$(basename "$script")
+  script_name=$(basename "$script")
 
-	matches_filter=false
-	if [[ ${#filters[@]} -eq 0 ]]; then
-		matches_filter=true
-	else
-		for filter in "${filters[@]}"; do
-			if echo "$script" | grep -q "$filter"; then
-				matches_filter=true
-				break
-			fi
-		done
-	fi
+  matches_filter=false
+  if [[ ${#filters[@]} -eq 0 ]]; then
+    matches_filter=true
+  else
+    for filter in "${filters[@]}"; do
+      if echo "$script" | grep -q "$filter"; then
+        matches_filter=true
+        break
+      fi
+    done
+  fi
 
-	if [[ "$matches_filter" == false ]]; then
-		log_skip "Skipped: $script_name"
-		((skipped_count++))
-		echo ""
-		continue
-	fi
+  if [[ "$matches_filter" == false ]]; then
+    log_skip "Skipped: $script_name"
+    ((skipped_count++))
+    echo ""
+    continue
+  fi
 
-	execute "$script_name"
-	((executed_count++))
-	echo ""
+  execute "$script_name"
+  ((executed_count++))
+  echo ""
 done
 
 # Summary
 echo -e "${BOLD}Summary${RESET}"
 
 if [[ ${#successful_scripts[@]} -gt 0 ]]; then
-	echo -e "${GREEN}${BOLD}Successful (${success_count}):${RESET}"
-	for script in "${successful_scripts[@]}"; do
-		echo -e "  ${GREEN}${CHECK}${RESET} $script"
-	done
+  echo -e "${GREEN}${BOLD}Successful (${success_count}):${RESET}"
+  for script in "${successful_scripts[@]}"; do
+    echo -e "  ${GREEN}${CHECK}${RESET} $script"
+  done
 fi
 
 if [[ ${#failed_scripts[@]} -gt 0 ]]; then
-	echo -e "${RED}${BOLD}Failed (${failed_count}):${RESET}"
-	for script in "${failed_scripts[@]}"; do
-		echo -e "  ${RED}${CROSS}${RESET} $script"
-	done
+  echo -e "${RED}${BOLD}Failed (${failed_count}):${RESET}"
+  for script in "${failed_scripts[@]}"; do
+    echo -e "  ${RED}${CROSS}${RESET} $script"
+  done
 fi
 
 if [[ $skipped_count -gt 0 ]]; then
-	echo -e "${GRAY}${BOLD}Skipped: ${skipped_count}${RESET}"
+  echo -e "${GRAY}${BOLD}Skipped: ${skipped_count}${RESET}"
 fi
 
 echo -e "${BLUE}${BOLD}Total Installations: ${executed_count}${RESET}"

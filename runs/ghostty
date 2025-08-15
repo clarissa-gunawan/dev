@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
+echo "Install ghostty"
+# https://ghostty.org/
 sudo snap install ghostty --classic

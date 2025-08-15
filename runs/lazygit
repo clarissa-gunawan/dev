@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+echo "Install lazygit: a tui for git"
+# https://github.com/jesseduffield/lazygit
+
 DOWNLOAD_FOLDER=/tmp
 INSTALL_FOLDER=~/.local/bin
 LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | \grep -Po '"tag_name": *"v\K[^"]*')
