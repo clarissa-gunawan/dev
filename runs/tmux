@@ -3,3 +3,9 @@
 echo "Install tmux: terminal multiplexer"
 # https://github.com/tmux/tmux/wiki
 sudo apt install -y tmux
+
+echo "Install tmux plugins"
+# https://github.com/tmux-plugins/tpm
+rm -rf $HOME/.tmux/plugins/tpm
+git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
+
