@@ -1,9 +1,23 @@
 #!/usr/bin/env bash
 
 if [[ $# -eq 1 ]]; then
-	selected=$1
+    selected=$1
 else
-	selected=$(find $HOME/code -maxdepth 1 -mindepth 1 -type d | fzf)
+    # Check if fd command exists, otherwise fall back to find
+    if command -v fd > /dev/null 2>&1; then
+        # Use fd: faster and more intuitive
+        # -t d: only directories
+        # -d 2: max depth of 2 levels
+        # -H: include hidden files/directories (remove this if you want to exclude all hidden)
+        # . $HOME/: search in home directory
+        selected=$(fd -t d -d 2 . "$HOME/" | fzf)
+    else
+        # Fallback to find with dotfolder exclusion
+        # -maxdepth 2 -mindepth 1: search 1-2 levels deep
+        # -type d: directories only
+        # -not -path "*/.*": exclude any path containing a dot-prefixed directory
+        selected=$(find "$HOME/" -maxdepth 2 -mindepth 1 -type d -not -path "*/.*" | fzf)
+    fi
 fi
 
 if [[ -z "$selected" ]]; then
