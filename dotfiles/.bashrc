@@ -133,4 +133,38 @@ bind '"\C-f":"tmux-sessionizer\n"'
 
 alias vim="nvim"
 
+# Allow for task.dev to autocomplete
 eval "$(task --completion bash)"
+
+# Persistent SSH Agent Setup
+# This script ensures a single SSH agent persists across all shell sessions
+# by creating a fixed socket location and reusing the same agent process
+
+# Check if our persistent SSH agent socket exists and is actually a socket file
+# -S tests specifically for socket files (not regular files or directories)
+if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+    # No persistent agent found, so start a new SSH agent
+    # ssh-agent outputs environment variables (SSH_AUTH_SOCK and SSH_AGENT_PID)
+    # eval executes these assignments in the current shell
+    eval `ssh-agent`
+    
+    # Create a symbolic link from the temporary agent socket to our fixed location
+    # This allows us to always connect to the same agent across sessions
+    # -s: create symbolic link
+    # -f: force overwrite if the link already exists
+    ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+fi
+
+# Always point SSH_AUTH_SOCK to our persistent socket location
+# This ensures all shells use the same agent, whether we just started it
+# or it was already running from a previous session
+export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+
+# Automatically load SSH keys if none are currently loaded
+# ssh-add -l lists currently loaded keys
+# > /dev/null discards the output (we only care about success/failure)
+# || means "if the previous command failed, run this command"
+# ssh-add with no arguments loads default keys (~/.ssh/id_rsa, ~/.ssh/id_dsa, etc.)
+ssh-add -l > /dev/null || ssh-add
+
+
