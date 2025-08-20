@@ -14,4 +14,6 @@ require("lazy").setup {
   require "cgunawan.plugins.zenmode",
   require "cgunawan.plugins.oil",
   require "cgunawan.plugins.which-key",
+  require "cgunawan.plugins.ros2",
+  require "cgunawan.plugins.markdown-preview",
 }

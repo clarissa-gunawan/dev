@@ -167,4 +167,5 @@ export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
 # ssh-add with no arguments loads default keys (~/.ssh/id_rsa, ~/.ssh/id_dsa, etc.)
 ssh-add -l > /dev/null || ssh-add
 
-
+# Zoxide to initialize
+eval "$(zoxide init bash)"

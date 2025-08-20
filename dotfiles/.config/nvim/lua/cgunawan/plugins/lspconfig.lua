@@ -220,7 +220,20 @@ return {
             },
           },
         },
-        -- clangd = {},
+        clangd = {
+          cmd = {
+            -- see clangd --help-hidden
+            "clangd",
+            "--background-index",
+            -- by default, clang-tidy use -checks=clang-diagnostic-*,clang-analyzer-*
+            -- to add more checks, create .clang-tidy file in the root directory
+            -- and add Checks key, see https://clang.llvm.org/extra/clang-tidy/
+            "--clang-tidy",
+            "--completion-style=bundled",
+            "--cross-file-rename",
+            "--header-insertion=iwyu",
+          },
+        },
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
@@ -268,8 +281,37 @@ return {
         "shfmt",
         "bashls",
         "ruff",
+        "clangd",
+        "cpplint",
       })
-      require("mason-tool-installer").setup { ensure_installed = ensure_installed }
+      require("mason-tool-installer").setup {
+        ensure_installed = ensure_installed,
+        -- if set to true this will check each tool for updates. If updates
+        -- are available the tool will be updated. This setting does not
+        -- affect :MasonToolsUpdate or :MasonToolsInstall.
+        -- Default: false
+        auto_update = false,
+
+        -- automatically install / update on startup. If set to false nothing
+        -- will happen on startup. You can use :MasonToolsInstall or
+        -- :MasonToolsUpdate to install tools and check for updates.
+        -- Default: true
+        run_on_start = true,
+
+        -- set a delay (in ms) before the installation starts. This is only
+        -- effective if run_on_start is set to true.
+        -- e.g.: 5000 = 5 second delay, 10000 = 10 second delay, etc...
+        -- Default: 0
+        start_delay = 3000, -- 3 second delay
+
+        -- Only attempt to install if 'debounce_hours' number of hours has
+        -- elapsed since the last time Neovim was started. This stores a
+        -- timestamp in a file named stdpath('data')/mason-tool-installer-debounce.
+        -- This is only relevant when you are using 'run_on_start'. It has no
+        -- effect when running manually via ':MasonToolsInstall' etc....
+        -- Default: nil
+        debounce_hours = 5, -- at least 5 hours between attempts to install/update
+      }
 
       require("mason-lspconfig").setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
