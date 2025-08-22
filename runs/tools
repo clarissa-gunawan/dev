@@ -14,7 +14,7 @@ sudo apt install -y bat
 
 echo "Install task"
 # https://taskfile.dev/
-sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
+sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
 
 
 echo "Install zoxide"
