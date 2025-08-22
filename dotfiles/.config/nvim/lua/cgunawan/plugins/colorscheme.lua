@@ -2,10 +2,11 @@ return {
   {
     "nvim-tree/nvim-web-devicons",
     opts = {},
-    priority = 900,
+    priority = 1000,
     lazy = false,
-    config = function()
+    config = function(_, opts)
       vim.g.have_nerd_font = true
+      require("nvim-web-devicons").setup(opts)
     end,
   },
   { -- You can easily change to a different colorscheme.

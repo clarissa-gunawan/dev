@@ -123,6 +123,8 @@ fi
 export PATH="$HOME/.local/bin:$PATH"
 
 export TERMINAL=ghostty
+export PS1="\[\e[1;32m\]\u\[\e[0m\]@\[\e[1;34m\]\h\[\e[0m\]:\w\$ "
+
 
 alias bat="batcat"
 alias cat="batcat"
