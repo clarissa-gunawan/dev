@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+echo "Install OpenAI's Codex"
+# https://github.com/openai/codex?tab=readme-ov-file
+sudo npm install -g @openai/codex
+
+echo "Install OpenCode"
+# https://opencode.ai/docs/
+curl -fsSL https://opencode.ai/install | bash
+
+echo "Install Cursor CLI"
+curl https://cursor.com/install -fsS | bash
