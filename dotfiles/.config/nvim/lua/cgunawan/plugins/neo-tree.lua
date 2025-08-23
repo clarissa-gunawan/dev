@@ -21,6 +21,7 @@ return {
           hide_dotfiles = false,
         },
       },
+      hijack_netrw_behavior = "disabled",
       window = {
         mapping = {
           ["\\"] = "close_window",
