@@ -17,4 +17,7 @@ require("lazy").setup {
   require "cgunawan.plugins.ros2",
   require "cgunawan.plugins.markdown-preview",
   require "cgunawan.plugins.blink-completion",
+  require "cgunawan.plugins.dap",
+  require "cgunawan.plugins.python-utils",
+  require "cgunawan.plugins.neotest",
 }

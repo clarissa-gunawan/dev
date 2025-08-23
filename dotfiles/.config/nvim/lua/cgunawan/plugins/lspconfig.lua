@@ -109,6 +109,16 @@ return {
           --  the definition of its *type*, not where it was *defined*.
           map("grt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype Definition")
 
+          -- Debug completion setup
+          map("<leader>lc", function()
+            local clients = vim.lsp.get_clients({ bufnr = event.buf })
+            print("LSP clients attached:")
+            for _, client in ipairs(clients) do
+              print("- " .. client.name .. " (completion: " .. tostring(client.server_capabilities.completionProvider ~= nil) .. ")")
+            end
+            print("Blink.cmp sources:", vim.inspect(require("blink.cmp").get_config().sources))
+          end, "Debug LSP Completion")
+
           -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
           ---@param client vim.lsp.Client
           ---@param method vim.lsp.protocol.Method
@@ -212,6 +222,17 @@ return {
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         ruff = {
+          on_attach = function(client, bufnr)
+            -- Disable formatting (handled by conform.nvim)
+            client.server_capabilities.documentFormattingProvider = false
+            -- Enable completion capabilities
+            client.server_capabilities.completionProvider = {
+              resolveProvider = true,
+              triggerCharacters = { ".", ":", " " },
+            }
+            print("Ruff LSP attached to buffer " .. bufnr)
+          end,
+
           init_options = {
             settings = {
               enable = true,
@@ -220,6 +241,44 @@ return {
             },
           },
         },
+        basedpyright = {
+          on_attach = function(client, bufnr)
+            -- Disable formatting (handled by conform.nvim)
+            client.server_capabilities.documentFormattingProvider = false
+            -- Ensure completion capabilities are enabled
+            client.server_capabilities.completionProvider = client.server_capabilities.completionProvider or {
+              resolveProvider = true,
+              triggerCharacters = { ".", "[", '"', "'", "(", " " },
+            }
+            print("BasedPyright LSP attached to buffer " .. bufnr)
+          end,
+          settings = {
+            basedpyright = {
+              -- Use Ruff's import organizer
+              disableOrganizeImports = true,
+            },
+            python = {
+              analysis = {
+                typeCheckingMode = "standard",
+                autoImportCompletions = true,
+                -- Let Ruff handle “unused” style diagnostics
+                diagnosticSeverityOverrides = {
+                  reportUnusedImport = "none",
+                  reportUnusedVariable = "none",
+                  reportDuplicateImport = "none",
+                  reportMissingImports = "warning",
+                  reportMissingTypeStubs = "none",
+                },
+                -- Enhanced analysis features
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+                completeFunctionParens = true,
+                indexing = true,
+              },
+            },
+          },
+        },
+
         clangd = {
           cmd = {
             -- see clangd --help-hidden
@@ -278,42 +337,44 @@ return {
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
+        -- Lua tools
         "stylua", -- Used to format Lua code
+        
+        -- Shell tools
         "shfmt",
         "bashls",
-        "ruff",
+        
+        -- Python tools (comprehensive setup)
+        "ruff", -- Linter and formatter
+        "basedpyright", -- Type checker
+        "black", -- Backup formatter
+        "isort", -- Import sorting
+        "mypy", -- Additional type checking
+        "debugpy", -- Python debugger
+        
+        -- C/C++ tools
         "clangd",
         "cpplint",
+        "clang-format",
+        
+        -- YAML tools
         "yamlfmt",
         "yamlfix",
+        
+        -- Additional formatters used in conform
+        "prettierd", -- JSON/Markdown formatter
+        "prettier", -- Fallback formatter
       })
       require("mason-tool-installer").setup {
         ensure_installed = ensure_installed,
-        -- if set to true this will check each tool for updates. If updates
-        -- are available the tool will be updated. This setting does not
-        -- affect :MasonToolsUpdate or :MasonToolsInstall.
-        -- Default: false
-        auto_update = false,
-
-        -- automatically install / update on startup. If set to false nothing
-        -- will happen on startup. You can use :MasonToolsInstall or
-        -- :MasonToolsUpdate to install tools and check for updates.
-        -- Default: true
+        -- Auto-update tools when available
+        auto_update = true,
+        -- Install immediately on startup
         run_on_start = true,
-
-        -- set a delay (in ms) before the installation starts. This is only
-        -- effective if run_on_start is set to true.
-        -- e.g.: 5000 = 5 second delay, 10000 = 10 second delay, etc...
-        -- Default: 0
-        start_delay = 3000, -- 3 second delay
-
-        -- Only attempt to install if 'debounce_hours' number of hours has
-        -- elapsed since the last time Neovim was started. This stores a
-        -- timestamp in a file named stdpath('data')/mason-tool-installer-debounce.
-        -- This is only relevant when you are using 'run_on_start'. It has no
-        -- effect when running manually via ':MasonToolsInstall' etc....
-        -- Default: nil
-        debounce_hours = 5, -- at least 5 hours between attempts to install/update
+        -- No delay for immediate installation
+        start_delay = 0,
+        -- Check for updates every time (remove debounce for development)
+        debounce_hours = nil,
       }
 
       require("mason-lspconfig").setup {

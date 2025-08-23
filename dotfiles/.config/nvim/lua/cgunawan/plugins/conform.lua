@@ -32,7 +32,7 @@ return {
       formatters_by_ft = {
         lua = { "stylua" },
         -- Conform can also run multiple formatters sequentially
-        python = { "ruff_fix", "ruff_format", "ruff_organize_imports", "black" },
+        python = { "ruff_organize_imports", "ruff_fix", "ruff_format" },
         cpp = { "clang-format" },
         xml = { "xmllint", "xmlformatter", "xmlstarlet", stop_after_first = true },
         ansible = { "ansible-lint" },
