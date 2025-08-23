@@ -1,0 +1,16 @@
+gui:
+    nerdFontsVersion: "3"
+    border: rounded
+    theme:
+      activeBorderColor: ["#88c0d0", "bold"]
+      inactiveBorderColor: ["#4c566a"]
+      optionsTextColor: ["#88c0d0"]
+      selectedLineBgColor: ["#3b4252"]
+      selectedRangeBgColor: ["#3b4252"]
+      cherryPickedCommitBgColor: ["#3b4252"]
+      cherryPickedCommitFgColor: ["#88c0d0"]
+      unstagedChangesColor: ["#bf616a"]
+      defaultFgColor: ["#d8dee9"]
+      defaultBgColor: ["#2e3440"]
+    authorColors:
+      "Clarissa Gunawan": "#ebcb8b"
