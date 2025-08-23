@@ -174,3 +174,7 @@ ssh-add -l > /dev/null || ssh-add
 
 # Zoxide to initialize
 eval "$(zoxide init bash)"
+
+# Bash Completion, if available
+[[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
+    . /usr/share/bash-completion/bash_completion

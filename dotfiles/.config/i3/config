@@ -28,14 +28,18 @@ bindsym Ctrl+Shift+Print exec maim --select | xclip -selection clipboard -t imag
 # Lock Screen
 bindsym Ctrl+Mod1+l exec "i3lock -c 161821"
 
-# Autolock
-exec "xautolock -detectsleep -time 3 -locker \"i3lock -c 161821\""
+# Autolock (10 minutes, restart-safe)
+exec_always --no-startup-id sh -c 'pkill -x xautolock; xautolock -detectsleep -time 10 locker "i3lock -c 161821"'
 
 # Player
 exec --no-startup-id sh -c 'pgrep -x playerctld >/dev/null || playerctld daemon'
 bindsym XF86AudioPlay exec playerctl -p playerctld play-pause
 bindsym XF86AudioNext exec playerctl -p playerctld next
 bindsym XF86AudioPrev exec playerctl -p playerctld previous
+
+# Brightness (requires brightnessctl)
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set 5%+
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.

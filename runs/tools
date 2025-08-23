@@ -20,3 +20,7 @@ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.loca
 echo "Install zoxide"
 # https://github.com/ajeetdsouza/zoxide
 curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+
+
+echo "Install bash-completion"
+sudo apt install -y bash-completion
