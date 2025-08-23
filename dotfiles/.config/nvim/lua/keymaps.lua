@@ -74,7 +74,6 @@ end)
 vim.keymap.set("n", "<leader>svwm", function()
   require("vim-with-me").StopVimWithMe()
 end)
-vim.keymap.set("n", "<leader>pv", ":Vex<CR>", { noremap = true, silent = true, desc = "Create project view window" })
 
 -- Helps with pasting a visual block (foo) over another visual block (bar)
 -- It deletes (puts) bar in the void

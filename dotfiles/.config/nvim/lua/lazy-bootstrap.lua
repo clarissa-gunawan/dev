@@ -13,4 +13,8 @@ end
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
+require("lazy").setup({
+  spec = "cgunawan.lazy",
+  change_detection = {notify = false}
+})
 -- vim: ts=2 sts=2 sw=2 et
