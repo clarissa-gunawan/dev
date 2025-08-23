@@ -16,4 +16,5 @@ require("lazy").setup {
   require "cgunawan.plugins.which-key",
   require "cgunawan.plugins.ros2",
   require "cgunawan.plugins.markdown-preview",
+  require "cgunawan.plugins.blink-completion",
 }
