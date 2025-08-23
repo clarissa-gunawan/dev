@@ -125,13 +125,17 @@ export PATH="$HOME/.local/bin:$PATH"
 export TERMINAL=ghostty
 export PS1="\[\e[1;32m\]\u\[\e[0m\]@\[\e[1;34m\]\h\[\e[0m\]:\w\$ "
 
-
 alias bat="batcat"
 alias cat="batcat"
 
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash
 eval "$(fzf --bash)"
 alias fzf="fzf --preview='batcat {}'"
+export FZF_DEFAULT_OPTS=" \
+    --color=fg:#C6C6C6,bg:#1A1B26,hl:#7AA2F7
+    --color=fg+:#C6C6C6,bg+:#24283B,hl+:#7AA2F7
+    --color=info:#7DCFFF,prompt:#BB9AF7,pointer:#FF9E64
+    --color=marker:#FF9E64,spinner:#7DCFFF,header:#414868"
 
 PATH="$PATH":"$HOME/.local/scripts/"
 bind '"\C-f":"tmux-sessionizer\n"'
