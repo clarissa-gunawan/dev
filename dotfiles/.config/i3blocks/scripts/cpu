@@ -1,20 +1,34 @@
-#!/bin/bash
-# Enhanced CPU block with color thresholds and icons
+#!/usr/bin/env bash
 
-# Get CPU usage
 CPU=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)
 CPU_INT=${CPU%.*}
 
-# Color-coded thresholds and icons
+create_bar() {
+    local percent=$1
+    local bar_length=5
+    local filled=$((percent * bar_length / 100))
+    local bar=""
+    
+    for ((i=1; i<=bar_length; i++)); do
+        if [ $i -le $filled ]; then
+            bar="${bar}▓"
+        else
+            bar="${bar}░"
+        fi
+    done
+    echo "[$bar]"
+}
+
 if [ "$CPU_INT" -lt 50 ]; then
     COLOR="#b4be82"  # Green
-    ICON="▁"
+    DOT="●"
 elif [ "$CPU_INT" -lt 80 ]; then
     COLOR="#e2c792"  # Yellow
-    ICON="▄"
+    DOT="●"
 else
     COLOR="#e27878"  # Red
-    ICON="▇"
+    DOT="●"
 fi
 
-echo "<span color='$COLOR'>$ICON CPU</span> ${CPU}%"
+BAR=$(create_bar $CPU_INT)
+echo "<span color='$COLOR'>$DOT CPU $BAR</span> ${CPU}%"

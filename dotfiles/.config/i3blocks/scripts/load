@@ -1,0 +1,55 @@
+#!/bin/bash
+# Enhanced Load Average block with color-coded dots and ASCII bars
+
+# Get load averages
+LOAD_INFO=$(uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $3" "$4" "$5 }' | sed 's/,//g')
+LOAD_1MIN=$(echo $LOAD_INFO | awk '{print $1}')
+LOAD_5MIN=$(echo $LOAD_INFO | awk '{print $2}')
+LOAD_15MIN=$(echo $LOAD_INFO | awk '{print $3}')
+
+# Get number of CPU cores for percentage calculation
+CPU_CORES=$(nproc)
+
+# Calculate load percentage based on 1-minute average
+LOAD_PERCENT=$(echo "scale=0; ($LOAD_1MIN * 100) / $CPU_CORES" | bc -l 2>/dev/null || echo "0")
+
+# Create ASCII bar based on load percentage
+create_bar() {
+    local percent=$1
+    local bar_length=5
+    local filled=$((percent * bar_length / 100))
+    local bar=""
+    
+    # Cap at bar_length to prevent overflow
+    if [ $filled -gt $bar_length ]; then
+        filled=$bar_length
+    fi
+    
+    for ((i=1; i<=bar_length; i++)); do
+        if [ $i -le $filled ]; then
+            bar="${bar}▓"
+        else
+            bar="${bar}░"
+        fi
+    done
+    echo "[$bar]"
+}
+
+# Color-coded thresholds based on load relative to CPU cores
+# Load of 1.0 per core = 100% utilization
+LOAD_THRESHOLD_1=$(echo "scale=2; $CPU_CORES * 0.7" | bc -l)  # 70% of cores
+LOAD_THRESHOLD_2=$(echo "scale=2; $CPU_CORES * 1.0" | bc -l)  # 100% of cores
+
+if (( $(echo "$LOAD_1MIN < $LOAD_THRESHOLD_1" | bc -l) )); then
+    COLOR="#b4be82"  # Green - Normal load
+    DOT="●"
+elif (( $(echo "$LOAD_1MIN < $LOAD_THRESHOLD_2" | bc -l) )); then
+    COLOR="#e2c792"  # Yellow - Medium load
+    DOT="●"
+else
+    COLOR="#e27878"  # Red - High load
+    DOT="●"
+fi
+
+BAR=$(create_bar $LOAD_PERCENT)
+echo "<span color='$COLOR'>$DOT LOAD $BAR</span> 1m:$LOAD_1MIN 5m:$LOAD_5MIN 15m:$LOAD_15MIN"

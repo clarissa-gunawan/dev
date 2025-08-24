@@ -1,31 +1,52 @@
-#!/bin/bash
-# Enhanced Battery block with color thresholds and charging status
+#!/usr/bin/env bash
 
-# Get battery info
 BATTERY_INFO=$(acpi -b 2>/dev/null | head -1)
 
 if [ -z "$BATTERY_INFO" ]; then
-    echo "<span color='#6b7089'>🔌 BAT</span> N/A"
+    echo "<span color='#6b7089'>● BAT [N/A]</span> No Battery"
     exit 0
 fi
 
-# Extract percentage and status
 BATTERY_PERCENT=$(echo "$BATTERY_INFO" | grep -o '[0-9]*%' | sed 's/%//')
 BATTERY_STATUS=$(echo "$BATTERY_INFO" | awk '{print $3}' | sed 's/,//')
 
-# Determine icon and color based on status and level
+create_bar() {
+    local percent=$1
+    local bar_length=5
+    local filled=$((percent * bar_length / 100))
+    local bar=""
+    
+    for ((i=1; i<=bar_length; i++)); do
+        if [ $i -le $filled ]; then
+            bar="${bar}▓"
+        else
+            bar="${bar}░"
+        fi
+    done
+    echo "[$bar]"
+}
+
 if [[ "$BATTERY_STATUS" == "Charging" ]]; then
-    ICON="🔌"
     COLOR="#b4be82"  # Green when charging
+    DOT="●"
+    STATUS_TEXT="AC"
 elif [ "$BATTERY_PERCENT" -lt 20 ]; then
-    ICON="🪫"
     COLOR="#e27878"  # Red - critical
+    DOT="●"
+    STATUS_TEXT="LOW"
 elif [ "$BATTERY_PERCENT" -lt 50 ]; then
-    ICON="🔋"
-    COLOR="#e2c792"  # Yellow - low
+    COLOR="#e2c792"  # Yellow - medium
+    DOT="●"
+    STATUS_TEXT=""
 else
-    ICON="🔋"
     COLOR="#b4be82"  # Green - good
+    DOT="●"
+    STATUS_TEXT=""
 fi
 
-echo "<span color='$COLOR'>$ICON BAT</span> ${BATTERY_PERCENT}%"
+BAR=$(create_bar $BATTERY_PERCENT)
+if [ -n "$STATUS_TEXT" ]; then
+    echo "<span color='$COLOR'>$DOT BAT $BAR</span> ${BATTERY_PERCENT}% $STATUS_TEXT"
+else
+    echo "<span color='$COLOR'>$DOT BAT $BAR</span> ${BATTERY_PERCENT}%"
+fi

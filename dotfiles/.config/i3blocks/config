@@ -1,82 +1,67 @@
 # i3blocks configuration file
-# Easy-to-see status bar with theme colors for high visibility
-#
-# Theme Colors - Currently Iceberg Dark (matches i3 config colors):
-# Enhanced with visual thresholds, network details, temperature monitoring,
-# efficient commands, and smart refresh intervals
+# Easy-to-see status bar with Iceberg Dark theme
+# Enhanced with color-coded dots + ASCII bars/text
 #
 # Global properties
-separator_block_width=20
+separator_block_width=15
 markup=pango
 align=center
 
-# Workspace indicator (handled by i3bar itself)
-# This shows current workspace clearly
-
 #
-# Enhanced System Information Blocks
+# Enhanced System Information Blocks with Color-Coded Dots + ASCII
 #
 
-# CPU Usage - Enhanced with color thresholds and dynamic icons
 [cpu_usage]
 command=~/.config/i3blocks/scripts/cpu
 interval=3
 color=#c6c8d1
-min_width=▇ CPU 100%
+min_width=● CPU [▓▓▓▓▓] 100.0%
 
-# Memory Usage - Enhanced with color thresholds and dynamic icons
 [memory]
 command=~/.config/i3blocks/scripts/memory
 interval=5
 color=#c6c8d1
-min_width=▇ RAM 99.9G/99.9G
+min_width=● RAM [▓▓▓▓▓] 99.9G/99.9G
 
-# Temperature Monitoring - CPU/System temperature
 [temperature]
 command=~/.config/i3blocks/scripts/temperature
 interval=10
 color=#c6c8d1
-min_width=🔥 TEMP 100°C
+min_width=● TMP [HOT!] 100°C
 
-# Disk Usage - Enhanced with color thresholds and dynamic icons
 [disk]
 command=~/.config/i3blocks/scripts/disk
 interval=60
 color=#c6c8d1
-min_width=▇ DISK 999G/999G (100%)
+min_width=● DSK [▓▓▓▓▓] 999G/999G (100%)
 
-# Network Status - Enhanced with WiFi details and signal strength
 [network]
 command=~/.config/i3blocks/scripts/network
 interval=5
 color=#c6c8d1
-min_width=▇ WiFi NetworkName -50dBm
+min_width=● NET [████░] NetworkName -50dBm
 
-# Volume - Efficient with signal updates
 [volume]
-command=echo "<span color='#e2c792'> 🔊 VOL</span> $(pamixer --get-volume-human 2>/dev/null || echo "N/A")"
+command=VOL=$(pamixer --get-volume-human 2>/dev/null || echo "N/A"); if [ "$VOL" = "muted" ]; then echo "<span color='#91acd1'>● VOL [MUTE]</span> 0%"; else echo "<span color='#91acd1'>● VOL [♪♪♪♪♪]</span> $VOL"; fi
 interval=once
 signal=10
 color=#c6c8d1
-min_width=🔊 VOL 100%
+min_width=● VOL [♪♪♪♪♪] 100%
 
-# Battery - Enhanced with charging status and color thresholds
 [battery]
 command=~/.config/i3blocks/scripts/battery
-interval=100
+interval=30
 color=#c6c8d1
-min_width=🔌 BAT 100%
+min_width=● BAT [▓▓▓▓▓] 100% HIGH
 
-# Date and Time - Static refresh for clock accuracy
 [time]
-command=echo "<span color='#e27878'> 🕐 CLOCK</span> $(date '+%Y-%m-%d %H:%M:%S')"
+command=echo "<span color='#91acd1'>● TIME</span> $(date '+%Y-%m-%d %H:%M:%S')"
 interval=1
 color=#c6c8d1
-min_width=🕐 CLOCK 2024-12-31 23:59:59
+min_width=● TIME 2024-12-31 23:59:59
 
-# System Load - Less frequent updates for efficiency
 [load_average]
-command=uptime | grep -ohe 'load average[s:][: ].*' | awk '{ gsub(/,/, "", $3); gsub(/,/, "", $4); gsub(/,/, "", $5); printf "<span color=\"#89b8c2\"> 📊 LOAD</span> 1m:%s 5m:%s 15m:%s", $3, $4, $5 }'
+command=~/.config/i3blocks/scripts/load
 interval=15
 color=#c6c8d1
-min_width=📊 LOAD 1m:9.99 5m:9.99 15m:9.99
+min_width=● LOAD [▓▓▓▓▓] 1m:99.99 5m:99.99 15m:99.99

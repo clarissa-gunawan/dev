@@ -1,22 +1,36 @@
-#!/bin/bash
-# Enhanced Disk block with color thresholds and icons
+#!/usr/bin/env bash
 
-# Get disk usage
 DISK_INFO=$(df -h / | awk 'NR==2{print $5 " " $3 " " $2}')
 DISK_PERCENT=$(echo $DISK_INFO | awk '{print $1}' | sed 's/%//')
 DISK_USED=$(echo $DISK_INFO | awk '{print $2}')
 DISK_TOTAL=$(echo $DISK_INFO | awk '{print $3}')
 
-# Color-coded thresholds and icons
+create_bar() {
+    local percent=$1
+    local bar_length=5
+    local filled=$((percent * bar_length / 100))
+    local bar=""
+    
+    for ((i=1; i<=bar_length; i++)); do
+        if [ $i -le $filled ]; then
+            bar="${bar}▓"
+        else
+            bar="${bar}░"
+        fi
+    done
+    echo "[$bar]"
+}
+
 if [ "$DISK_PERCENT" -lt 80 ]; then
     COLOR="#b4be82"  # Green
-    ICON="▁"
+    DOT="●"
 elif [ "$DISK_PERCENT" -lt 95 ]; then
     COLOR="#e2c792"  # Yellow
-    ICON="▄"
+    DOT="●"
 else
     COLOR="#e27878"  # Red
-    ICON="▇"
+    DOT="●"
 fi
 
-echo "<span color='$COLOR'>$ICON DISK</span> ${DISK_USED}/${DISK_TOTAL} (${DISK_PERCENT}%)"
+BAR=$(create_bar $DISK_PERCENT)
+echo "<span color='$COLOR'>$DOT DSK $BAR</span> ${DISK_USED}/${DISK_TOTAL} (${DISK_PERCENT}%)"

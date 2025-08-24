@@ -1,7 +1,5 @@
-#!/bin/bash
-# Temperature monitoring block
+#!/usr/bin/env bash
 
-# Try different temperature sources
 TEMP=""
 
 # Try CPU thermal zone
@@ -16,19 +14,32 @@ elif command -v sensors >/dev/null 2>&1; then
 fi
 
 if [ -n "$TEMP" ]; then
-    # Color-coded temperature thresholds
+    # Create temperature status text
+    create_temp_status() {
+        local temp=$1
+        if [ "$temp" -lt 60 ]; then
+            echo "[COOL]"
+        elif [ "$temp" -lt 80 ]; then
+            echo "[WARM]"
+        else
+            echo "[HOT!]"
+        fi
+    }
+    
+    # Color-coded temperature thresholds with dots
     if [ "$TEMP" -lt 60 ]; then
         COLOR="#b4be82"  # Green
-        ICON="❄"
+        DOT="●"
     elif [ "$TEMP" -lt 80 ]; then
         COLOR="#e2c792"  # Yellow
-        ICON="🌡"
+        DOT="●"
     else
         COLOR="#e27878"  # Red
-        ICON="🔥"
+        DOT="●"
     fi
     
-    echo "<span color='$COLOR'>$ICON TEMP</span> ${TEMP}°C"
+    TEMP_STATUS=$(create_temp_status $TEMP)
+    echo "<span color='$COLOR'>$DOT TMP $TEMP_STATUS</span> ${TEMP}°C"
 else
-    echo "<span color='#6b7089'>🌡 TEMP</span> N/A"
+    echo "<span color='#6b7089'>● TMP [N/A]</span> Unknown"
 fi

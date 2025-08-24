@@ -1,22 +1,36 @@
-#!/bin/bash
-# Enhanced Memory block with color thresholds and icons
+#!/usr/bin/env bash
 
-# Get memory usage
-MEM_INFO=$(free | awk '/^Mem/ { printf "%.0f %.0f", $3/$2*100, $3/1024/1024 }')
+MEM_INFO=$(free | awk '/^Mem/ { printf "%.0f %.1f %.1f", $3/$2*100, $3/1024/1024, $2/1024/1024 }')
 MEM_PERCENT=$(echo $MEM_INFO | awk '{print $1}')
 MEM_USED=$(echo $MEM_INFO | awk '{print $2}')
-MEM_TOTAL=$(free -h | awk '/^Mem/ { print $2 }' | sed 's/i//')
+MEM_TOTAL=$(echo $MEM_INFO | awk '{print $3}')
 
-# Color-coded thresholds and icons
+create_bar() {
+    local percent=$1
+    local bar_length=5
+    local filled=$((percent * bar_length / 100))
+    local bar=""
+    
+    for ((i=1; i<=bar_length; i++)); do
+        if [ $i -le $filled ]; then
+            bar="${bar}▓"
+        else
+            bar="${bar}░"
+        fi
+    done
+    echo "[$bar]"
+}
+
 if [ "$MEM_PERCENT" -lt 70 ]; then
     COLOR="#b4be82"  # Green
-    ICON="▁"
+    DOT="●"
 elif [ "$MEM_PERCENT" -lt 90 ]; then
     COLOR="#e2c792"  # Yellow
-    ICON="▄"
+    DOT="●"
 else
     COLOR="#e27878"  # Red
-    ICON="▇"
+    DOT="●"
 fi
 
-echo "<span color='$COLOR'>$ICON RAM</span> ${MEM_USED}G/${MEM_TOTAL}"
+BAR=$(create_bar $MEM_PERCENT)
+echo "<span color='$COLOR'>$DOT RAM $BAR</span> ${MEM_USED}G/${MEM_TOTAL}G"
