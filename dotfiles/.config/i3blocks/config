@@ -1,0 +1,65 @@
+## i3blocks configuration file
+# Easy-to-see status bar with theme colors for high visibility
+# Theme Colors - Iceberg Dark
+
+# Global properties
+separator_block_width=15
+markup=pango
+align=center
+
+# CPU Usage
+[cpu_usage]
+command=echo "<span color='#b4be82'>CPU</span> $(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)%"
+interval=10
+color=#c6c8d1
+min_width=CPU 100%
+
+# Memory Usage
+[memory]
+command=echo "<span color='#a093c7'>RAM</span> $(free -h | awk '/^Mem/ { print $3"/"$2 }' | sed s/i//g)"
+interval=10
+color=#c6c8d1
+min_width=RAM 99.9G/99.9G
+
+# Disk Usage
+[disk]
+command=echo "<span color='#e2a478'>DISK</span> $(df -h / | awk 'NR==2{printf "%s/%s (%s)", $3,$2,$5}')"
+interval=30
+color=#c6c8d1
+min_width=DISK 999G/999G (100%)
+
+# Network Status
+[network]
+command=echo "<span color='#91acd1'>NET</span> $([[ -z "$(ip route show default)" ]] && echo "Disconnected" || echo "Connected")"
+interval=10
+color=#c6c8d1
+min_width=NET Disconnected
+
+# Volume
+[volume]
+command=echo "<span color='#e2c792'>VOL</span> $(pamixer --get-volume-human 2>/dev/null || echo "N/A")"
+interval=1
+signal=10
+color=#c6c8d1
+min_width=VOL 100%
+
+# Battery
+[battery]
+command=echo "<span color='#84a0c6'>BAT</span> $(acpi -b 2>/dev/null | grep -o '[0-9]*%' | head -1 || echo "N/A")"
+interval=30
+color=#c6c8d1
+min_width=BAT 100%
+
+# Date and Time
+[time]
+command=echo "<span color='#e27878'>CLOCK</span> $(date '+%Y-%m-%d %H:%M:%S')"
+interval=1
+color=#c6c8d1
+min_width=TIME 2024-12-31 23:59:59
+
+# System Load
+[load_average]
+command=uptime | grep -ohe 'load average[s:][: ].*' | awk '{ gsub(/,/, "", $3); gsub(/,/, "", $4); gsub(/,/, "", $5); printf "<span color=\"#89b8c2\">LOAD</span> 1m:%s 5m:%s 15m:%s", $3, $4, $5 }'
+interval=10
+color=#c6c8d1
+min_width=LOAD 9.99 9.99 9.99
