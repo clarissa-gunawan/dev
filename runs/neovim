@@ -12,6 +12,8 @@ sudo apt install -y gcc make cmake gettext \
                     ripgrep unzip git xclip \
                     fd-find nodejs npm python3-venv python3-pip
 
+ln -s $(which fdfind) ~/.local/bin/fd
+
 cd $neovim_dir
 make CMAKE_BUILD_TYPE=RelWithDebInfo
 sudo make install

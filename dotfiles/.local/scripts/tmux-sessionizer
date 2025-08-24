@@ -4,13 +4,13 @@ if [[ $# -eq 1 ]]; then
     selected=$1
 else
     # Check if fd command exists, otherwise fall back to find
-    if command -v fdfind > /dev/null 2>&1; then
+    if command -v fd > /dev/null 2>&1; then
         # Use fd: faster and more intuitive
         # -t d: only directories
         # -d 2: max depth of 2 levels
         # -H: include hidden files/directories (remove this if you want to exclude all hidden)
         # . $HOME/: search in home directory
-        selected=$(fdfind -t d -d 2 . "$HOME/" | fzf)
+        selected=$(fd -t d -d 2 . "$HOME/" | fzf)
     else
         # Fallback to find with dotfolder exclusion
         # -maxdepth 2 -mindepth 1: search 1-2 levels deep

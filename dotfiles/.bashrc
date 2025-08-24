@@ -132,10 +132,11 @@ alias cat="batcat"
 eval "$(fzf --bash)"
 alias fzf="fzf --preview='batcat {}'"
 export FZF_DEFAULT_OPTS=" \
-    --color=fg:#C6C6C6,bg:#1A1B26,hl:#7AA2F7
-    --color=fg+:#C6C6C6,bg+:#24283B,hl+:#7AA2F7
-    --color=info:#7DCFFF,prompt:#BB9AF7,pointer:#FF9E64
-    --color=marker:#FF9E64,spinner:#7DCFFF,header:#414868"
+    --color=fg:#D6DAE8,bg:#161821,hl:#88c0d0 \
+    --color=fg+:#E8ECF4,bg+:#1E2132,hl+:#88c0d0 \
+    --color=info:#9CCEF2,prompt:#BBA8E8,pointer:#EBCB8B \
+    --color=marker:#C8E6A0,spinner:#9CCEF2,header:#8B95B8"
+export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --exclude .git'
 
 PATH="$PATH":"$HOME/.local/scripts/"
 bind '"\C-f":"tmux-sessionizer\n"'

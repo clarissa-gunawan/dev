@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 languages=(
-    "python3" "bash" "c" "cpp" "cmake" "javascript" "typescript"
+    "python" "python3" "bash" "c" "cpp" "cmake" "javascript" "typescript"
     "golang" "rust" "django"
 )
 core_utils=(
