@@ -111,10 +111,16 @@ return {
 
           -- Debug completion setup
           map("<leader>lc", function()
-            local clients = vim.lsp.get_clients({ bufnr = event.buf })
-            print("LSP clients attached:")
+            local clients = vim.lsp.get_clients { bufnr = event.buf }
+            print "LSP clients attached:"
             for _, client in ipairs(clients) do
-              print("- " .. client.name .. " (completion: " .. tostring(client.server_capabilities.completionProvider ~= nil) .. ")")
+              print(
+                "- "
+                  .. client.name
+                  .. " (completion: "
+                  .. tostring(client.server_capabilities.completionProvider ~= nil)
+                  .. ")"
+              )
             end
             print("Blink.cmp sources:", vim.inspect(require("blink.cmp").get_config().sources))
           end, "Debug LSP Completion")
@@ -246,10 +252,11 @@ return {
             -- Disable formatting (handled by conform.nvim)
             client.server_capabilities.documentFormattingProvider = false
             -- Ensure completion capabilities are enabled
-            client.server_capabilities.completionProvider = client.server_capabilities.completionProvider or {
-              resolveProvider = true,
-              triggerCharacters = { ".", "[", '"', "'", "(", " " },
-            }
+            client.server_capabilities.completionProvider = client.server_capabilities.completionProvider
+              or {
+                resolveProvider = true,
+                triggerCharacters = { ".", "[", '"', "'", "(", " " },
+              }
             print("BasedPyright LSP attached to buffer " .. bufnr)
           end,
           settings = {
@@ -304,6 +311,11 @@ return {
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         --
+        bashls = {
+          settings = {
+            filetypes = { "sh", "bash", "zsh" },
+          },
+        },
         yamlfix = {},
         yamlfmt = {},
 
@@ -339,11 +351,9 @@ return {
       vim.list_extend(ensure_installed, {
         -- Lua tools
         "stylua", -- Used to format Lua code
-        
         -- Shell tools
         "shfmt",
         "bashls",
-        
         -- Python tools (comprehensive setup)
         "ruff", -- Linter and formatter
         "basedpyright", -- Type checker
@@ -351,16 +361,13 @@ return {
         "isort", -- Import sorting
         "mypy", -- Additional type checking
         "debugpy", -- Python debugger
-        
         -- C/C++ tools
         "clangd",
         "cpplint",
         "clang-format",
-        
         -- YAML tools
         "yamlfmt",
         "yamlfix",
-        
         -- Additional formatters used in conform
         "prettierd", -- JSON/Markdown formatter
         "prettier", -- Fallback formatter
