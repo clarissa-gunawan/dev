@@ -1,7 +1,5 @@
-#!/bin/bash
-# Enhanced Load Average block with color-coded dots and ASCII bars
+#!/usr/bin/env bash
 
-# Get load averages
 LOAD_INFO=$(uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $3" "$4" "$5 }' | sed 's/,//g')
 LOAD_1MIN=$(echo $LOAD_INFO | awk '{print $1}')
 LOAD_5MIN=$(echo $LOAD_INFO | awk '{print $2}')
@@ -13,7 +11,6 @@ CPU_CORES=$(nproc)
 # Calculate load percentage based on 1-minute average
 LOAD_PERCENT=$(echo "scale=0; ($LOAD_1MIN * 100) / $CPU_CORES" | bc -l 2>/dev/null || echo "0")
 
-# Create ASCII bar based on load percentage
 create_bar() {
     local percent=$1
     local bar_length=5

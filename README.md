@@ -62,9 +62,6 @@ git log --oneline
 # Search commits that added/removed specific text
 git log -S "searched_text"
 
-# Pretty formats
-git log --pretty=format:"%C(yellow)%h%C(reset) %s %C(dim)(%cr)%C(reset)"
-git log --pretty=format:"%h - %an, %ar : %s"
 ```
 
 ### Unix Tools Quick Reference
