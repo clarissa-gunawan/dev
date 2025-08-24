@@ -1,0 +1,22 @@
+#!/bin/bash
+# Enhanced Memory block with color thresholds and icons
+
+# Get memory usage
+MEM_INFO=$(free | awk '/^Mem/ { printf "%.0f %.0f", $3/$2*100, $3/1024/1024 }')
+MEM_PERCENT=$(echo $MEM_INFO | awk '{print $1}')
+MEM_USED=$(echo $MEM_INFO | awk '{print $2}')
+MEM_TOTAL=$(free -h | awk '/^Mem/ { print $2 }' | sed 's/i//')
+
+# Color-coded thresholds and icons
+if [ "$MEM_PERCENT" -lt 70 ]; then
+    COLOR="#b4be82"  # Green
+    ICON="▁"
+elif [ "$MEM_PERCENT" -lt 90 ]; then
+    COLOR="#e2c792"  # Yellow
+    ICON="▄"
+else
+    COLOR="#e27878"  # Red
+    ICON="▇"
+fi
+
+echo "<span color='$COLOR'>$ICON RAM</span> ${MEM_USED}G/${MEM_TOTAL}"

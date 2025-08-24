@@ -1,0 +1,34 @@
+#!/bin/bash
+# Temperature monitoring block
+
+# Try different temperature sources
+TEMP=""
+
+# Try CPU thermal zone
+if [ -f /sys/class/thermal/thermal_zone0/temp ]; then
+    TEMP_RAW=$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null)
+    if [ -n "$TEMP_RAW" ] && [ "$TEMP_RAW" != "0" ]; then
+        TEMP=$((TEMP_RAW / 1000))
+    fi
+elif command -v sensors >/dev/null 2>&1; then
+    # Try lm-sensors
+    TEMP=$(sensors 2>/dev/null | grep -E "Core 0|Package id 0|Tctl" | head -1 | grep -oE '[0-9]+\.[0-9]+°C' | cut -d'°' -f1 | cut -d'.' -f1)
+fi
+
+if [ -n "$TEMP" ]; then
+    # Color-coded temperature thresholds
+    if [ "$TEMP" -lt 60 ]; then
+        COLOR="#b4be82"  # Green
+        ICON="❄"
+    elif [ "$TEMP" -lt 80 ]; then
+        COLOR="#e2c792"  # Yellow
+        ICON="🌡"
+    else
+        COLOR="#e27878"  # Red
+        ICON="🔥"
+    fi
+    
+    echo "<span color='$COLOR'>$ICON TEMP</span> ${TEMP}°C"
+else
+    echo "<span color='#6b7089'>🌡 TEMP</span> N/A"
+fi

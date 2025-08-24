@@ -1,0 +1,42 @@
+#!/bin/bash
+# Enhanced Network block with WiFi details and signal strength
+
+# Check if connected
+if [[ -z "$(ip route show default)" ]]; then
+    echo "<span color='#e27878'>✗ NET</span> Disconnected"
+    exit 0
+fi
+
+# Check for WiFi interface
+WIFI_INTERFACE=$(iw dev 2>/dev/null | awk '$1=="Interface"{print $2}' | head -1)
+
+if [ -n "$WIFI_INTERFACE" ]; then
+    # Get WiFi info
+    WIFI_INFO=$(iw dev "$WIFI_INTERFACE" link 2>/dev/null)
+    if [ $? -eq 0 ] && echo "$WIFI_INFO" | grep -q "Connected"; then
+        SSID=$(echo "$WIFI_INFO" | grep "SSID" | awk '{print $2}')
+        SIGNAL=$(iw dev "$WIFI_INTERFACE" station dump 2>/dev/null | grep "signal:" | awk '{print $2}' | head -1)
+        
+        # Signal strength icon
+        if [ -n "$SIGNAL" ]; then
+            SIGNAL_NUM=${SIGNAL%% *}
+            if [ "$SIGNAL_NUM" -gt -50 ]; then
+                ICON="▇"  # Strong
+                COLOR="#b4be82"
+            elif [ "$SIGNAL_NUM" -gt -70 ]; then
+                ICON="▄"  # Medium
+                COLOR="#e2c792"
+            else
+                ICON="▁"  # Weak
+                COLOR="#e27878"
+            fi
+            echo "<span color='$COLOR'>$ICON WiFi</span> $SSID ${SIGNAL}dBm"
+        else
+            echo "<span color='#91acd1'>📶 WiFi</span> $SSID"
+        fi
+    else
+        echo "<span color='#91acd1'>🔌 ETH</span> Connected"
+    fi
+else
+    echo "<span color='#91acd1'>🔌 ETH</span> Connected"
+fi

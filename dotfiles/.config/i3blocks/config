@@ -1,65 +1,82 @@
-## i3blocks configuration file
+# i3blocks configuration file
 # Easy-to-see status bar with theme colors for high visibility
-# Theme Colors - Iceberg Dark
-
+#
+# Theme Colors - Currently Iceberg Dark (matches i3 config colors):
+# Enhanced with visual thresholds, network details, temperature monitoring,
+# efficient commands, and smart refresh intervals
+#
 # Global properties
-separator_block_width=15
+separator_block_width=20
 markup=pango
 align=center
 
-# CPU Usage
+# Workspace indicator (handled by i3bar itself)
+# This shows current workspace clearly
+
+#
+# Enhanced System Information Blocks
+#
+
+# CPU Usage - Enhanced with color thresholds and dynamic icons
 [cpu_usage]
-command=echo "<span color='#b4be82'>CPU</span> $(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)%"
-interval=10
+command=~/.config/i3blocks/scripts/cpu
+interval=3
 color=#c6c8d1
-min_width=CPU 100%
+min_width=▇ CPU 100%
 
-# Memory Usage
+# Memory Usage - Enhanced with color thresholds and dynamic icons
 [memory]
-command=echo "<span color='#a093c7'>RAM</span> $(free -h | awk '/^Mem/ { print $3"/"$2 }' | sed s/i//g)"
+command=~/.config/i3blocks/scripts/memory
+interval=5
+color=#c6c8d1
+min_width=▇ RAM 99.9G/99.9G
+
+# Temperature Monitoring - CPU/System temperature
+[temperature]
+command=~/.config/i3blocks/scripts/temperature
 interval=10
 color=#c6c8d1
-min_width=RAM 99.9G/99.9G
+min_width=🔥 TEMP 100°C
 
-# Disk Usage
+# Disk Usage - Enhanced with color thresholds and dynamic icons
 [disk]
-command=echo "<span color='#e2a478'>DISK</span> $(df -h / | awk 'NR==2{printf "%s/%s (%s)", $3,$2,$5}')"
-interval=30
+command=~/.config/i3blocks/scripts/disk
+interval=60
 color=#c6c8d1
-min_width=DISK 999G/999G (100%)
+min_width=▇ DISK 999G/999G (100%)
 
-# Network Status
+# Network Status - Enhanced with WiFi details and signal strength
 [network]
-command=echo "<span color='#91acd1'>NET</span> $([[ -z "$(ip route show default)" ]] && echo "Disconnected" || echo "Connected")"
-interval=10
+command=~/.config/i3blocks/scripts/network
+interval=5
 color=#c6c8d1
-min_width=NET Disconnected
+min_width=▇ WiFi NetworkName -50dBm
 
-# Volume
+# Volume - Efficient with signal updates
 [volume]
-command=echo "<span color='#e2c792'>VOL</span> $(pamixer --get-volume-human 2>/dev/null || echo "N/A")"
-interval=1
+command=echo "<span color='#e2c792'> 🔊 VOL</span> $(pamixer --get-volume-human 2>/dev/null || echo "N/A")"
+interval=once
 signal=10
 color=#c6c8d1
-min_width=VOL 100%
+min_width=🔊 VOL 100%
 
-# Battery
+# Battery - Enhanced with charging status and color thresholds
 [battery]
-command=echo "<span color='#84a0c6'>BAT</span> $(acpi -b 2>/dev/null | grep -o '[0-9]*%' | head -1 || echo "N/A")"
-interval=30
+command=~/.config/i3blocks/scripts/battery
+interval=100
 color=#c6c8d1
-min_width=BAT 100%
+min_width=🔌 BAT 100%
 
-# Date and Time
+# Date and Time - Static refresh for clock accuracy
 [time]
-command=echo "<span color='#e27878'>CLOCK</span> $(date '+%Y-%m-%d %H:%M:%S')"
+command=echo "<span color='#e27878'> 🕐 CLOCK</span> $(date '+%Y-%m-%d %H:%M:%S')"
 interval=1
 color=#c6c8d1
-min_width=TIME 2024-12-31 23:59:59
+min_width=🕐 CLOCK 2024-12-31 23:59:59
 
-# System Load
+# System Load - Less frequent updates for efficiency
 [load_average]
-command=uptime | grep -ohe 'load average[s:][: ].*' | awk '{ gsub(/,/, "", $3); gsub(/,/, "", $4); gsub(/,/, "", $5); printf "<span color=\"#89b8c2\">LOAD</span> 1m:%s 5m:%s 15m:%s", $3, $4, $5 }'
-interval=10
+command=uptime | grep -ohe 'load average[s:][: ].*' | awk '{ gsub(/,/, "", $3); gsub(/,/, "", $4); gsub(/,/, "", $5); printf "<span color=\"#89b8c2\"> 📊 LOAD</span> 1m:%s 5m:%s 15m:%s", $3, $4, $5 }'
+interval=15
 color=#c6c8d1
-min_width=LOAD 9.99 9.99 9.99
+min_width=📊 LOAD 1m:9.99 5m:9.99 15m:9.99

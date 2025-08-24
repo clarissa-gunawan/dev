@@ -1,0 +1,20 @@
+#!/bin/bash
+# Enhanced CPU block with color thresholds and icons
+
+# Get CPU usage
+CPU=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)
+CPU_INT=${CPU%.*}
+
+# Color-coded thresholds and icons
+if [ "$CPU_INT" -lt 50 ]; then
+    COLOR="#b4be82"  # Green
+    ICON="▁"
+elif [ "$CPU_INT" -lt 80 ]; then
+    COLOR="#e2c792"  # Yellow
+    ICON="▄"
+else
+    COLOR="#e27878"  # Red
+    ICON="▇"
+fi
+
+echo "<span color='$COLOR'>$ICON CPU</span> ${CPU}%"
