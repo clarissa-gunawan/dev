@@ -2,5 +2,5 @@
 
 echo "Install i3"
 # https://github.com/i3/i3
-sudo apt install -y i3 i3lock xautolock picom maim xdotool xclip \
-                    playerctl
+sudo apt install -y i3 i3lock i3blocks xautolock picom maim xdotool xclip \
+                    playerctl pamixer brightnessctl
