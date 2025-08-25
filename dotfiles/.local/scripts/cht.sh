@@ -15,19 +15,24 @@ if (( ! $FUZZY_SEARCH )); then
     )
 
     # Convert to newline-separated strings for fzf
-    languages=$(printf '%s\n' "${languages[@]}")
-    core_utils=$(printf '%s\n' "${core_utils[@]}")
-    selected=$(echo -e "$languages\n$core_utils" | fzf)
+    fuzzy_search_name="fuzzy search"
+    languages=$(printf "%s\n" "${languages[@]}")
+    core_utils=$(printf "%s\n" "${core_utils[@]}")
+    selected=$(echo -e "$fuzzy_search_name\n$languages\n$core_utils" | fzf)
     
-    read -p "Query (try :learn, or :list for languages or empty for core utilies): " query
-    
-    if echo "$languages" | grep -qs $selected; then
-        curl --silent cht.sh/$selected/$(echo "$query" | tr " " "+") | less -R
+    if [[ $selected == "$fuzzy_search_name" ]]; then
+        FUZZY_SEARCH=1
     else
-        curl --silent cht.sh/$selected~$query | less -R
+         read -p "Query (try :learn, or :list for languages or empty for core utilies): " query
+         if echo "$languages" | grep -qs $selected; then
+             curl --silent cht.sh/$selected/$(echo "$query" | tr " " "+") | less -R
+         else
+             curl --silent cht.sh/$selected~$query | less -R
+         fi
     fi
+fi
 
-else
+if (( $FUZZY_SEARCH )); then
     CHT_SH_LIST_CACHE_DIR="$HOME/.cache/cht_sh/"
     CHT_SH_LIST_CACHE="$HOME/.cache/cht_sh/cht_sh_cached_list"
     
@@ -45,36 +50,17 @@ else
         source ~/.bashrc
     fi
     
-    #Select a cht.sh cheat from the list
-    selected=$(cat $CHT_SH_LIST_CACHE | fzf --reverse --ansi --print-query --prompt="CHEAT.SH>" --preview="curl -s cht.sh/{}")
+    selected=$(cat $CHT_SH_LIST_CACHE | fzf --reverse --ansi --prompt="CHEAT.SH>" --preview="curl -s cht.sh/{}")
     
-    echo "SELECTED: $selected"
-    if [[ -z $selected ]]; then
-        exit 0
-    fi
+    query=$(curl -s "cht.sh/$selected/:list" | fzf --reverse --ansi --prompt="CHEAT.SH/$selected >" 
+          --preview="curl -s cht.sh/$selected/{1} && curl -s cht.sh/$selected/{q}")
+    query=$(echo $query | tr " " "+" | sed "s/.*+//")
     
-    query_list=$(curl -s "cht.sh/$selected/:list")
-    echo "QUERY LIST: $query_list"
-    # Remove the special items
-    filtered_list=$(echo "$query_list" | grep -vE "^(:list|:learn|rosetta/)$")
-    
-    # Check if it's a language (after filtering)
-    trimmed=$(echo "$filtered_list" | tr -d '[:space:]')
-    echo "$trimmed"
-    if [[ -z "$trimmed" ]]; then
-        echo "Utils"
+    if [[ -z $query ]]; then
+        curl -s cht.sh/$selected | less -R
     else
-        echo "Language"
+        curl -s "cht.sh/$selected/$query" | less -R
     fi
-    
-    #query=$(curl -s "cht.sh/$selected/:list" | fzf --reverse --print-query --ansi --nth 2..,.. --prompt="CHEAT.SH/$selected >" 
-     #       --preview="curl -s cht.sh/$selected/{1} && curl -s cht.sh/$selected/{q}")
-    
-    #query=`curl -s cht.sh/$selected/:list | fzf --print-query --reverse --height 75% --border -m --ansi --nth 2..,.. --prompt='CHEAT.SH/'$(echo $selected | tr a-z A-Z)'> ' \
-    #    --preview='curl -s cht.sh/'$selected'/{1} && curl -s cht.sh/'$selected'/{q}' --preview-window=right:80%`
-    
-    
-
 fi
 
 
