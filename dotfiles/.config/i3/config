@@ -257,7 +257,7 @@ set $color15  #a093c7
 bar {
         status_command i3blocks
         position bottom
-        font pango:DejaVu Sans Mono 12
+        font pango:DejaVu Sans Mono 10
 
         colors {
                 background $color0

@@ -17,6 +17,12 @@ interval=3
 color=#c6c8d1
 min_width=● CPU [▓▓▓▓▓] 100.0%
 
+[gpu_usage]
+command=~/.config/i3blocks/scripts/gpu
+interval=5
+color=#c6c8d1
+min_width=● GPU [▓▓▓▓▓] 100% 99.9G/99.9G 100°C
+
 [memory]
 command=~/.config/i3blocks/scripts/memory
 interval=5

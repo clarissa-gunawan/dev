@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+# Check if nvidia-smi is available
+if ! command -v nvidia-smi &> /dev/null; then
+    echo "<span color='#e27878'>● GPU [UNAVAIL]</span> N/A"
+    exit 1
+fi
+
+# Get GPU information: utilization, memory used, memory total, temperature
+GPU_INFO=$(nvidia-smi --query-gpu=utilization.gpu,memory.used,memory.total,temperature.gpu --format=csv,noheader,nounits 2>/dev/null)
+
+if [ $? -ne 0 ] || [ -z "$GPU_INFO" ]; then
+    echo "<span color='#e27878'>● GPU [ERROR]</span> N/A"
+    exit 1
+fi
+
+# Parse the information
+GPU_UTIL=$(echo "$GPU_INFO" | cut -d',' -f1 | tr -d ' ')
+MEM_USED=$(echo "$GPU_INFO" | cut -d',' -f2 | tr -d ' ')
+MEM_TOTAL=$(echo "$GPU_INFO" | cut -d',' -f3 | tr -d ' ')
+GPU_TEMP=$(echo "$GPU_INFO" | cut -d',' -f4 | tr -d ' ')
+
+# Calculate memory usage percentage
+if [ "$MEM_TOTAL" -gt 0 ]; then
+    MEM_PERCENT=$((MEM_USED * 100 / MEM_TOTAL))
+else
+    MEM_PERCENT=0
+fi
+
+create_bar() {
+    local percent=$1
+    local bar_length=5
+    local filled=$((percent * bar_length / 100))
+    local bar=""
+    
+    for ((i=1; i<=bar_length; i++)); do
+        if [ $i -le $filled ]; then
+            bar="${bar}▓"
+        else
+            bar="${bar}░"
+        fi
+    done
+    echo "[$bar]"
+}
+
+# Determine color based on GPU utilization
+if [ "$GPU_UTIL" -lt 30 ]; then
+    COLOR="#b4be82"  # Green
+    DOT="●"
+elif [ "$GPU_UTIL" -lt 70 ]; then
+    COLOR="#e2c792"  # Yellow
+    DOT="●"
+else
+    COLOR="#e27878"  # Red
+    DOT="●"
+fi
+
+# Format memory usage (convert MB to GB for display)
+MEM_USED_GB=$(echo "scale=1; $MEM_USED / 1024" | bc 2>/dev/null || echo "0.0")
+MEM_TOTAL_GB=$(echo "scale=1; $MEM_TOTAL / 1024" | bc 2>/dev/null || echo "0.0")
+
+BAR=$(create_bar $GPU_UTIL)
+echo "<span color='$COLOR'>$DOT GPU $BAR</span> ${GPU_UTIL}% ${MEM_USED_GB}G/${MEM_TOTAL_GB}G ${GPU_TEMP}°C"
