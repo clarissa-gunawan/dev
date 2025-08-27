@@ -1,0 +1,67 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "lmstudio": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "LM Studio (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:1234/v1/",
+        "includeUsage": true
+      },
+      "models": {
+        "google/gemma-3n-e4b": {
+          "name": "Gemma 3n-e4b (local)"
+        },
+        "openai/gpt-oss-20b": {
+          "name": "GPT OSS 20B"
+        },
+        "qwen/qwen3-4b-2507": {
+          "name": "Qwen3 4B 2507"
+        },
+
+        "qwen/qwen3-4b-thinking-2507": {
+          "name": "Qwen3 4B Thinking 2507"
+        },
+        "qwen/qwen3-coder-30b": {
+          "name": "Qwen3 Coder 30B",
+          "limit": {
+            "context": 10000,
+            "output": 5000
+          }
+        },
+        "mistralai/devstral-small-2507": {
+          "name": "Devstral Small 2507"
+        }
+      }
+    },
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1/"
+      },
+      "models": {
+        "qwen3:latest": {
+          "name": "Qwen 3",
+          "tools": true
+        },
+        "qwen3-coder:latest": {
+          "name": "Qwen 3 Coder",
+          "tools": true
+        },
+        "gpt-oss:latest": {
+          "name": "GPT OSS",
+          "tools": true
+        },
+        "granite3.3:8b": {
+          "name": "Granite 3.3 8B",
+          "tools": true
+        },
+        "mistral-small3.2:24b": {
+          "name": "Mistral Small 3.2 24B",
+          "tools": true
+        }
+      }
+    }
+  }
+}

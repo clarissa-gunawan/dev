@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+echo "Install LM Studio"
+current_dir=$(pwd)
+mkdir -p $HOME/Applications
+cd $HOME/Applications
+curl -fsSL https://installers.lmstudio.ai/linux/x64/0.3.23-3/LM-Studio-0.3.23-3-x64.AppImage
+chmod +x LM-Studio-0.3.23-3-x64.AppImage
+$HOME/.lmstudio/bin/lms bootstrap
+
+mkdir -p "$HOME/.lmstudio/.internal"
+cat > $HOME/.lmstudio/.internal/http-server-config.json << 'EOF'
+{
+  "autoStartOnLaunch": false,
+  "port": 1234,
+  "cors": false,
+  "logSensitiveData": true,
+  "verbose": false,
+  "logLinesLimit": 500,
+  "networkInterface": "0.0.0.0",
+  "justInTimeModelLoading": true,
+  "fileLoggingMode": "succinct",
+  "jitLoadingTTLSettings": {
+    "enabled": true,
+    "ttlSeconds": 3600
+  }
+}
+EOF
+
+source $HOME/.bashrc
+lms server start
+cd $current_dir

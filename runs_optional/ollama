@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+echo "Install Ollama"
+# https://ollama.com/search
+cd /tmp
+curl -fsSL https://ollama.com/install.sh | sh

@@ -188,3 +188,5 @@ eval "$(zoxide init bash)"
 export EDITOR=vim
 export PATH="$HOME/.opencode/bin:$PATH"
 
+# LM Studio CLI tool (lms)
+export PATH="$PATH:$HOME/.lmstudio/bin"
