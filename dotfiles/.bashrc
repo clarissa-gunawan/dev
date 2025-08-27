@@ -138,7 +138,7 @@ export FZF_DEFAULT_OPTS=" \
     --color=marker:#C8E6A0,spinner:#9CCEF2,header:#8B95B8"
 export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --exclude .git'
 
-PATH="$PATH":"$HOME/.local/scripts/"
+export PATH="$PATH":"$HOME/.local/scripts/"
 bind '"\C-f":"tmux-sessionizer\n"'
 
 alias vim="nvim"
@@ -183,3 +183,8 @@ eval "$(zoxide init bash)"
 # Bash Completion, if available
 [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
     . /usr/share/bash-completion/bash_completion
+
+# Open Code Config
+export EDITOR=vim
+export PATH="$HOME/.opencode/bin:$PATH"
+

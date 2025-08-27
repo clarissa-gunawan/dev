@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+
+OS_ID=$(cat /etc/lsb-release | grep ID | awk -F '=' '{print $2}' | tr '[:upper:]' '[:lower:]')
+OS_VERSION=$(cat /etc/lsb-release | grep RELEASE | awk -F '=' '{print $2}' | tr -d '.')
+DISTRO="$OS_ID$OS_VERSION"
+ARCH=$(uname -m)
+
+echo "Install cuda"
+
+wget -P /tmp https://developer.download.nvidia.com/compute/cuda/repos/$DISTRO/$ARCH/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i /tmp/cuda-keyring_1.1-1_all.deb
+
+sudo apt update
+sudo install cuda-toolkit
+
+# Check and add CUDA PATH
+if ! grep -q "cuda-13.0/bin" ~/.bashrc; then
+    echo 'export PATH=/usr/local/cuda-13.0/bin${PATH:+:${PATH}}' >> ~/.bashrc
+    echo "Added CUDA PATH to .bashrc"
+else
+    echo "CUDA PATH already exists in .bashrc"
+fi
+
+# Check and add CUDA LD_LIBRARY_PATH
+if ! grep -q "cuda-13.0/lib64" ~/.bashrc; then
+    echo 'export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda-13.0/lib64' >> ~/.bashrc
+    echo "Added CUDA LD_LIBRARY_PATH to .bashrc"
+else
+    echo "CUDA LD_LIBRARY_PATH already exists in .bashrc"
+fi

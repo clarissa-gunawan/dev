@@ -11,3 +11,7 @@ curl -fsSL https://opencode.ai/install | bash
 echo "Install Cursor CLI"
 # https://docs.cursor.com/en/cli/installation
 curl https://cursor.com/install -fsS | bash
+
+echo "Install Ollama"
+# https://ollama.com/search
+curl -fsSL https://ollama.com/install.sh | sh

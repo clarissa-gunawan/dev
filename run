@@ -17,6 +17,7 @@ SKIP="○"
 ARROW="→"
 
 script_dir=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+runs_dir="./runs"
 filters=()
 dry="0"
 executed_count=0
@@ -30,6 +31,8 @@ failed_scripts=()
 while [[ $# > 0 ]]; do
   if [[ $1 == "--dry" ]]; then
     dry="1"
+  elif [[ $1 == "--optional" ]]; then
+    runs_dir="./runs_optional"
   else
     filters+=("$1")
   fi
@@ -71,14 +74,14 @@ execute() {
   local script_name="$1"
   log_execute "Executing: $script_name"
 
-  log "./runs/$script_name"
+  log "$runs_dir/$script_name"
   if [[ $dry == "1" ]]; then
     successful_scripts+=("$script_name")
     ((success_count++))
     return 0
   fi
 
-  if "./runs/$script_name"; then
+  if "$runs_dir/$script_name"; then
     echo -e "${GREEN}${CHECK}${RESET} ${GREEN}Success${RESET}"
     successful_scripts+=("$script_name")
     ((success_count++))
@@ -94,10 +97,10 @@ execute() {
 cd "$script_dir"
 
 # Find and process scripts
-scripts=$(find ./runs -maxdepth 1 -mindepth 1 -executable -type f 2>/dev/null)
+scripts=$(find $runs_dir -maxdepth 1 -mindepth 1 -executable -type f 2>/dev/null)
 
 if [[ -z "$scripts" ]]; then
-  echo -e "${YELLOW}No executable scripts found in ./runs${RESET}"
+  echo -e "${YELLOW}No executable scripts found in $runs_dir${RESET}"
   exit 1
 fi
 
