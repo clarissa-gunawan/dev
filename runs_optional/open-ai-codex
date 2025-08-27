@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+echo "Install OpenAI's Codex"
+# https://github.com/openai/codex?tab=readme-ov-file
+sudo npm install -g @openai/codex
