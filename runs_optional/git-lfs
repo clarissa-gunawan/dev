@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
+set -e
 
 # Git LFS Installation Script for Ubuntu/Debian
 # https://git-lfs.com/
-
-set -e
 
 echo "Instal git lfs"
 sudo apt-get update

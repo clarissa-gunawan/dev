@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 echo "Install Cursor CLI"
 # https://docs.cursor.com/en/cli/installation

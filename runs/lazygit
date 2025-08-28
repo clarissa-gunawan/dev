@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 echo "Install lazygit: a tui for git"
 # https://github.com/jesseduffield/lazygit

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 echo "Install tmux: terminal multiplexer"
 # https://github.com/tmux/tmux/wiki

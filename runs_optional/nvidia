@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # Downloads go to the tmp folder
 cd /tmp

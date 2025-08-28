@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -e
 
 OS_ID=$(cat /etc/lsb-release | grep ID | awk -F '=' '{print $2}' | tr '[:upper:]' '[:lower:]')
 OS_VERSION=$(cat /etc/lsb-release | grep RELEASE | awk -F '=' '{print $2}' | tr -d '.')

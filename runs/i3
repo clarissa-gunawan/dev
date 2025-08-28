@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 echo "Install i3"
 # https://github.com/i3/i3

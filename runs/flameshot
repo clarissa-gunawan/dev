@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # Script to install and fix Flameshot GUI mode in i3wm
 # This installs Flameshot and modifies the desktop entry to launch GUI mode by default

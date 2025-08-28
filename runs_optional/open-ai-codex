@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 echo "Install OpenAI's Codex"
 # https://github.com/openai/codex?tab=readme-ov-file

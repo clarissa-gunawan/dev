@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 DOWNLOAD_FOLDER=/tmp
 INSTALL_FOLDER=~/.local/bin
