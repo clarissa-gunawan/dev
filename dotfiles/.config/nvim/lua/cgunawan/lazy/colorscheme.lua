@@ -64,15 +64,64 @@ return {
       -- vim.cmd.colorscheme 'nord'
     end,
   },
-
   {
-    -- Iceberg Theme
+    -- Iceberg Theme Original Cocopn
+    -- https://vimcolorschemes.com/cocopon/iceberg.vim
+    "cocopon/iceberg.vim",
+    config = function()
+      vim.cmd.colorscheme "iceberg"
+      vim.o.background = "dark"
+    end,
+  },
+  {
+    -- Iceberg Theme Lua
     -- https://github.com/oahlen/iceberg.nvim
     "oahlen/iceberg.nvim",
-    lazy = false,
+    config = function()
+      --vim.cmd.colorscheme "iceberg-dark"
+    end,
+  },
+  {
+    -- Nordic Theme warmer darker Nord
+    -- https://vimcolorschemes.com/alexvzyl/nordic.nvim
+    "AlexvZyl/nordic.nvim",
+    config = function()
+      --  vim.cmd.colorscheme "nordic"
+    end,
+  },
+  {
+    -- Vague Theme
+    -- https://vimcolorschemes.com/vague2k/vague.nvim
+    "vague2k/vague.nvim",
+    config = function()
+      -- vim.cmd.colorscheme "vague"
+    end,
+  },
+  {
+    -- Catppucin Theme
+    -- https://vimcolorschemes.com/catppuccin/nvim
+    "catppuccin/nvim",
+    name = "catppuccin",
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme "iceberg-dark"
+      require("catppuccin").setup {
+        flavour = "mocha",
+        background = {
+          light = "latte",
+          dark = "mocha",
+        },
+        float = {
+          transparent = false, -- enable transparent floating windows
+          solid = false, -- use solid styling for floating windows, see |winborder|
+        },
+        auto_integrations = true,
+        color_overrides = {
+          all = {
+            base = "#181825",
+          },
+        },
+      }
+      -- vim.cmd.colorscheme "catppuccin"
     end,
   },
 }
