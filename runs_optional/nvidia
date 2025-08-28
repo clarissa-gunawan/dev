@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+# Check for required tools
+command -v wget || { echo "Installing wget..."; sudo apt update && sudo apt install -y wget; }
+
 # Downloads go to the tmp folder
 cd /tmp
 

@@ -4,6 +4,9 @@ set -e
 echo "Install lazygit: a tui for git"
 # https://github.com/jesseduffield/lazygit
 
+# Check for required tools
+command -v curl || { echo "Installing curl..."; sudo apt update && sudo apt install -y curl; }
+
 DOWNLOAD_FOLDER=/tmp
 INSTALL_FOLDER=~/.local/bin
 LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | \grep -Po '"tag_name": *"v\K[^"]*')

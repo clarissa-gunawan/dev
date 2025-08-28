@@ -4,6 +4,9 @@ set -e
 DOWNLOAD_FOLDER=/tmp
 INSTALL_FOLDER=~/.local/bin
 
+# Check for required tools
+command -v curl || { echo "Installing curl..."; sudo apt update && sudo apt install -y curl; }
+
 echo "Install docker dependencies"
 # https://docs.docker.com/engine/install/ubuntu/
 if ! (command -v docker &>/dev/null && command -v docker-compose &>/dev/null); then

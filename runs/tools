@@ -4,6 +4,11 @@ set -e
 echo "Install fzf"
 # https://github.com/junegunn/fzf
 fzf_dir=$HOME/code/fzf
+
+# Check for required tools
+command -v git || { echo "Installing git..."; sudo apt update && sudo apt install -y git; }
+command -v curl || { echo "Installing curl..."; sudo apt update && sudo apt install -y curl; }
+
 git clone --depth 1 https://github.com/junegunn/fzf.git $fzf_dir
 $fzf_dir/install --xdg --key-bindings --completion --update-rc
 

@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+# Check for required tools
+command -v curl || { echo "Installing curl..."; sudo apt update && sudo apt install -y curl; }
+
 echo "Install Ollama"
 # https://ollama.com/search
 cd /tmp

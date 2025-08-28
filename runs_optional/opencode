@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+# Check for required tools
+command -v curl || { echo "Installing curl..."; sudo apt update && sudo apt install -y curl; }
+
 echo "Install OpenCode"
 # https://opencode.ai/docs/
 cd /tmp

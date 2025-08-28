@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+# Check for required tools
+command -v npm || { echo "Installing nodejs and npm..."; sudo apt update && sudo apt install -y nodejs npm; }
+
 echo "Install OpenAI's Codex"
 # https://github.com/openai/codex?tab=readme-ov-file
 sudo npm install -g @openai/codex
