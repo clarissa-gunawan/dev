@@ -1,16 +1,18 @@
 # DEV ⚡
 
-A simple set of scripts to install everything in under 20 minutes.
+A lightweight setup for installing development tools and configurations without manual searching. This repository provides automated scripts to install essential development tools with personalized configurations using Iceberg Dark and Nord themes with DejaVu Sans Mono font. Everything installs in under 20 minutes, including dependencies.
 
-## Scripts
+## Quick Start
 
-**`./run`** - Run installation  
-**`./dev-env`** - Replace current host configuration ⚠️
-
-## Usage
+Run the main installation:
 
 ```bash
 ./run
+```
+
+Apply your dotfiles configuration:
+
+```bash
 ./dev-env
 ```
 
@@ -23,9 +25,67 @@ Preview changes without making modifications:
 ./dev-env --dry
 ```
 
-## ⚠️ Warning
+## Run Scripts
+
+Scripts are organized into core and optional categories with brief explanations of each tool.
+
+### Core Scripts (`runs/`)
+
+- **docker** - Container runtime with lazydocker TUI for easy management
+- **flameshot** - Screenshot tool with i3 integration
+- **ghostty** - Modern terminal emulator with GPU acceleration
+- **i3** - Tiling window manager with custom keybindings, Iceberg Dark theme, and status bar
+- **lazygit** - TUI for Git operations
+- **neovim** - Modern Vim fork with LSP support, treesitter syntax highlighting, and plugins for efficient coding
+- **rofi** - Application launcher and window switcher with custom themes
+- **tmux** - Terminal multiplexer for managing multiple sessions
+- **tools** - CLI utilities (fzf fuzzy finder, bat cat clone with syntax highlighting, task runner, zoxide smart cd, fd find replacement)
+- **zen-browser** - Firefox-based browser
+
+### Optional Scripts (`runs_optional/`)
+
+- **cuda** - NVIDIA CUDA toolkit for GPU computing
+- **cursor** - AI-powered code editor
+- **git-lfs** - Git Large File Storage for handling large files
+- **lmstudio** - Local LLM interface for running language models
+- **mujoco** - Physics simulation engine
+- **nvidia** - NVIDIA drivers and CUDA toolkit
+- **nvidia-container** - NVIDIA container toolkit for GPU-accelerated containers
+- **ollama** - Local LLM runner
+- **open-ai-codex** - OpenAI Codex CLI for code completion
+- **opencode** - AI coding assistant
+
+Run all core scripts:
+
+```bash
+./run
+```
+
+Run all optional scripts:
+
+```bash
+./run --optional
+```
+
+Run specific script:
+
+```bash
+./run neovim
+```
+
+## Configuration
+
+The `./dev-env` script copies dotfiles to your home directory, replacing existing configurations.
+
+### ⚠️ Warning
 
 `dev-env` will **delete** your current configuration and is **not recoverable**. Always test with `--dry` first.
+
+### Customization
+
+- Edit files in `dotfiles/` to personalize
+- Run `./dev-env` again to apply changes
+- Use `--dry` to preview what will be changed
 
 ## 🌟 Interesting Tools
 
