@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+
+VERSION="3.3.5"
+APPLICATION_DIR="$HOME/Applications"
+
+echo "Downloading and extracting MuJoCo $VERSION..."
+# https://github.com/google-deepmind/mujoco/releases
+mkdir -p $APPLICATION_DIR
+wget https://github.com/google-deepmind/mujoco/releases/download/$VERSION/mujoco-$VERSION-linux-x86_64.tar.gz -O $APPLICATION_DIR/mujoco-$VERSION-linux-x86_64.tar.gz
+tar -xzf $APPLICATION_DIR/mujoco-$VERSION-linux-x86_64.tar.gz -C $APPLICATION_DIR
+rm $APPLICATION_DIR/mujoco-$VERSION-linux-x86_64.tar.gz
+
+echo "MuJoCo extracted to $APPLICATION_DIR/mujoco-$VERSION"
