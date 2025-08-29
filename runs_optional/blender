@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Check for required tools
+command -v snap || { echo "Installing snap..."; sudo apt update && sudo apt install -y snapd; }
+
+echo "Install Blender: 3D creation suite"
+# https://www.blender.org/
+sudo snap install blender --classic
