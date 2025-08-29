@@ -87,6 +87,7 @@ bindsym $mod+Shift+q kill
 
 # start rofi (a program launcher)
 bindsym $mod+d exec --no-startup-id rofi -show drun
+bindsym $mod+p exec --no-startup-id rofi -show drun
 bindsym $mod+space exec --no-startup-id rofi -show combi
 bindsym $mod+Tab exec --no-startup-id rofi -show window
 
@@ -221,7 +222,7 @@ bindsym $mod+r mode "resize"
 
 # Theme Colors - Currently Iceberg Dark (change these 16 colors to switch themes)
 # color0:  Background Dark (main background)
-# color1:  Background Medium Dark  
+# color1:  Background Medium Dark
 # color2:  Background Medium
 # color3:  Background Light / Separator
 # color4:  Foreground Dark
