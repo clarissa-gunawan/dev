@@ -78,19 +78,19 @@ execute() {
   log "$runs_dir/$script_name"
   if [[ $dry == "1" ]]; then
     successful_scripts+=("$script_name")
-    ((success_count++))
+    success_count=$((success_count + 1))
     return 0
   fi
 
   if "$runs_dir/$script_name"; then
     echo -e "${GREEN}${CHECK}${RESET} ${GREEN}Success${RESET}"
     successful_scripts+=("$script_name")
-    ((success_count++))
+    success_count=$((success_count + 1))
     return 0
   else
     echo -e "${RED}${CROSS}${RESET} ${RED}Failed${RESET}"
     failed_scripts+=("$script_name")
-    ((failed_count++))
+    failed_count=$((failed_count + 1))
     return 1
   fi
 }
@@ -122,13 +122,13 @@ for script in $scripts; do
 
   if [[ "$matches_filter" == false ]]; then
     log_skip "Skipped: $script_name"
-    ((skipped_count++))
+    skipped_count=$((skipped_count + 1))
     echo ""
     continue
   fi
 
   execute "$script_name"
-  ((executed_count++))
+  executed_count=$((executed_count + 1))
   echo ""
 done
 
