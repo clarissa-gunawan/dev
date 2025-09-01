@@ -41,6 +41,12 @@ interval=60
 color=#c6c8d1
 min_width=● DSK [▓▓▓▓▓] 999G/999G (100%)
 
+[load_average]
+command=~/.config/i3blocks/scripts/load
+interval=15
+color=#c6c8d1
+min_width=● LOAD [▓▓▓▓▓] 1m:99.99 5m:99.99 15m:99.99
+
 [network]
 command=~/.config/i3blocks/scripts/network
 interval=5
@@ -65,9 +71,3 @@ command=echo "<span color='#91acd1'>● TIME</span> $(date '+%Y-%m-%d %H:%M:%S')
 interval=1
 color=#c6c8d1
 min_width=● TIME 2024-12-31 23:59:59
-
-[load_average]
-command=~/.config/i3blocks/scripts/load
-interval=15
-color=#c6c8d1
-min_width=● LOAD [▓▓▓▓▓] 1m:99.99 5m:99.99 15m:99.99
