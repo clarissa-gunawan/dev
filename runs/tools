@@ -9,7 +9,9 @@ fzf_dir=$HOME/code/fzf
 command -v git || { echo "Installing git..."; sudo apt update && sudo apt install -y git; }
 command -v curl || { echo "Installing curl..."; sudo apt update && sudo apt install -y curl; }
 
-git clone --depth 1 https://github.com/junegunn/fzf.git $fzf_dir
+if [ ! -d "$fzf_dir" ]; then
+    git clone --depth 1 https://github.com/junegunn/fzf.git $fzf_dir
+fi
 $fzf_dir/install --xdg --key-bindings --completion --update-rc
 
 
@@ -39,3 +41,21 @@ if [ ! -e "$HOME/.local/bin/fd" ]; then
 else
     echo "Link already exists, skipping."
 fi
+
+
+echo "Install yazi dependencies"
+# https://yazi-rs.github.io/docs/installation/
+sudo apt install -y ffmpeg 7zip jq poppler-utils ripgrep imagemagick xclip file
+
+echo "Install yazi binary"
+# Check for unzip
+command -v unzip || { echo "Installing unzip..."; sudo apt update && sudo apt install -y unzip; }
+
+DOWNLOAD_FOLDER=/tmp
+INSTALL_FOLDER=~/.local/bin
+YAZI_VERSION=$(curl -sL "https://api.github.com/repos/sxyazi/yazi/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+curl -fL -o "$DOWNLOAD_FOLDER/yazi-x86_64-unknown-linux-gnu.zip" \
+  "https://github.com/sxyazi/yazi/releases/download/$YAZI_VERSION/yazi-x86_64-unknown-linux-gnu.zip"
+unzip "$DOWNLOAD_FOLDER/yazi-x86_64-unknown-linux-gnu.zip" -d "$DOWNLOAD_FOLDER"
+cp "$DOWNLOAD_FOLDER/yazi-x86_64-unknown-linux-gnu/yazi" "$INSTALL_FOLDER"
+cp "$DOWNLOAD_FOLDER/yazi-x86_64-unknown-linux-gnu/ya" "$INSTALL_FOLDER"
