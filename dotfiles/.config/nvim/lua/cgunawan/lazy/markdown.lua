@@ -5,7 +5,9 @@ return {
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     ft = { "markdown" },
     -- event = "VeryLazy",
-    build = ":call mkdp#util#install()",
+    build = function()
+      vim.fn["mkdp#util#install"]()
+    end,
     config = function()
       -- Refresh markdown when saving the buffer or leaving insert mode
       vim.g.mkdp_refresh_slow = 1
@@ -24,5 +26,12 @@ return {
 
       vim.keymap.set("n", "<leader>mp", ":MarkdownPreviewToggle<CR>", { desc = "[M]arkdown [P]review Toggle" })
     end,
+  },
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {},
   },
 }
