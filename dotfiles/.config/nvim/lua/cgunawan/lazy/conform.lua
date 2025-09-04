@@ -15,11 +15,93 @@ return {
     },
     opts = {
       notify_on_error = false,
-      format_on_save = {
-        pattern = "*.{lua,python,yaml,json,md,sh,bash,c,cpp,rust,go,js,ts,html,css,scss,xml,cmake,ansible}",
-        timeout_ms = 500,
-        lsp_format = "fallback",
-      },
+      format_on_save = function(bufnr)
+        -- Get the file extension and filetype
+        local bufname = vim.api.nvim_buf_get_name(bufnr)
+        local ft = vim.bo[bufnr].filetype
+
+        -- Check for shebang in the first line
+        local first_line = vim.api.nvim_buf_get_lines(bufnr, 0, 1, false)[1] or ""
+        local is_shell_script = first_line:match "^#!.*/(bash|sh|zsh)"
+
+        -- File types that should be formatted
+        local format_filetypes = {
+          "lua",
+          "python",
+          "yaml",
+          "json",
+          "markdown",
+          "sh",
+          "bash",
+          "zsh",
+          "c",
+          "cpp",
+          "rust",
+          "go",
+          "javascript",
+          "typescript",
+          "html",
+          "css",
+          "scss",
+          "xml",
+          "cmake",
+          "ansible",
+        }
+
+        -- File extensions that should be formatted
+        local format_extensions = {
+          "%.lua$",
+          "%.py$",
+          "%.yaml$",
+          "%.yml$",
+          "%.json$",
+          "%.md$",
+          "%.sh$",
+          "%.bash$",
+          "%.c$",
+          "%.cpp$",
+          "%.h$",
+          "%.hpp$",
+          "%.rs$",
+          "%.go$",
+          "%.js$",
+          "%.ts$",
+          "%.html$",
+          "%.css$",
+          "%.scss$",
+          "%.xml$",
+        }
+
+        -- Check if filetype matches
+        for _, format_ft in ipairs(format_filetypes) do
+          if ft == format_ft then
+            return {
+              timeout_ms = 500,
+              lsp_format = "fallback",
+            }
+          end
+        end
+
+        -- Check if it's a shell script by shebang
+        if is_shell_script then
+          return {
+            timeout_ms = 500,
+            lsp_format = "fallback",
+          }
+        end
+
+        -- Check file extensions as fallback
+        for _, pattern in ipairs(format_extensions) do
+          if bufname:match(pattern) then
+            return {
+              timeout_ms = 500,
+              lsp_format = "fallback",
+            }
+          end
+        end
+
+        return nil
+      end,
       formatters_by_ft = {
         lua = { "stylua" },
         -- Conform can also run multiple formatters sequentially
@@ -33,7 +115,7 @@ return {
         html = { "prettierd", "prettier", stop_after_first = true },
         css = { "prettierd", "prettier", stop_after_first = true },
         scss = { "prettierd", "prettier", stop_after_first = true },
-        xml = { "prettierd", "prettier", stop_after_first = true },
+        xml = { "xmlformatter", "prettierd", "prettier", stop_after_first = true },
         ansible = { "prettierd", "prettier" },
         cmake = { "prettierd", "prettier" },
         yaml = { "yamlfmt", "yamlfix", stop_after_first = true },
@@ -41,6 +123,7 @@ return {
         markdown = { "prettierd", "prettier", stop_after_first = true },
         sh = { "shfmt" },
         bash = { "shfmt" },
+        zsh = { "shfmt" },
         -- Apply to all files as fallback
         ["_"] = { "trim_whitespace", "trim_newlines" },
         -- You can use 'stop_after_first' to run the first available formatter from the list
@@ -48,7 +131,7 @@ return {
       formatters = {
         shfmt = {
           command = "shfmt",
-          args = { "-i", "2", "-ci", "-w", "80" }, -- Example args: indent 2 spaces, compact if-statements
+          args = { "-i", "2", "-ci" }, -- 2 spaces indent, compact if-statements
           stdin = true, -- shfmt can work with stdin for formatting
         },
       },
