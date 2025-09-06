@@ -1,0 +1,219 @@
+#!/bin/bash
+
+# devcontainer-tools/setup - Interactive nvim devcontainer setup tool
+# Simplifies setting up nvim in devcontainers with LSP configurations
+
+set -euo pipefail
+
+# Script metadata
+SCRIPT_NAME="devcontainer-tools/setup"
+SCRIPT_VERSION="1.0.0"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKSPACE_DIR="$(pwd)"
+
+# Global variables
+DRY_RUN=false
+SELECTED_CONFIG=""
+CONTAINER_HOME=""
+CONTAINER_USER=""
+
+# Source shared functions
+source "$SCRIPT_DIR/common"
+
+# Help function
+show_help() {
+  cat <<HELP_EOF
+$SCRIPT_NAME v$SCRIPT_VERSION
+
+Interactive CLI tool to set up nvim in devcontainers with LSP configurations.
+
+USAGE:
+    $SCRIPT_NAME [OPTIONS]
+
+OPTIONS:
+    --dry, -d          Show what commands would be executed without running them
+    --help, -h         Show this help message
+    --version          Show version information
+
+EXAMPLES:
+    $SCRIPT_NAME                    # Interactive setup
+    $SCRIPT_NAME --dry              # Preview commands without execution
+
+FEATURES:
+    - Automatically discovers devcontainer configurations
+    - Interactive configuration selection
+    - Consistent nvim config mounting
+    - Dry run mode for safe testing
+    - User confirmation before execution
+    - Automatic container user detection
+
+HELP_EOF
+}
+
+# Version function
+show_version() {
+  echo "$SCRIPT_NAME v$SCRIPT_VERSION"
+}
+
+# Parse command line arguments
+parse_arguments() {
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+      --dry | -d)
+        DRY_RUN=true
+        shift
+        ;;
+      --help | -h)
+        show_help
+        exit 0
+        ;;
+      --version)
+        show_version
+        exit 0
+        ;;
+      *)
+        log_error "Unknown option: $1"
+        echo "Use --help for usage information"
+        exit 1
+        ;;
+    esac
+  done
+}
+
+# Confirm execution with user
+confirm_execution() {
+  local config="$1"
+  local container_home="$2"
+
+  echo
+  log_info "Execution Plan:"
+  echo "  Configuration: $config"
+  echo "  Container HOME: $container_home"
+  echo "  Mount nvim config: $HOME/.config/nvim -> $container_home/.config/nvim"
+  echo "  Mount dev directory: $HOME/dev -> $container_home/dev"
+  echo
+
+  if [[ "$DRY_RUN" == true ]]; then
+    log_dry "DRY RUN MODE - No actual execution will occur"
+    return 0
+  fi
+
+  while true; do
+    read -p "Proceed with devcontainer setup? (y/N): " confirm
+    case $confirm in
+      [Yy] | [Yy][Ee][Ss])
+        return 0
+        ;;
+      [Nn] | [Nn][Oo] | "")
+        log_info "Setup cancelled by user"
+        exit 0
+        ;;
+      *)
+        log_error "Please answer yes (y) or no (n)"
+        ;;
+    esac
+  done
+}
+
+# Execute devcontainer up command
+execute_devcontainer_up() {
+  local config="$1"
+  local container_home="$2"
+
+  local mount_nvim="type=bind,source=$HOME/.config/nvim,target=$container_home/.config/nvim"
+  local mount_dev="type=bind,source=$HOME/dev,target=$container_home/dev"
+
+  local cmd="devcontainer up --workspace-folder . --config \"$config\" --mount \"$mount_nvim\" --mount \"$mount_dev\""
+
+  if [[ "$DRY_RUN" == true ]]; then
+    log_dry "Execute: $cmd"
+    return 0
+  fi
+
+  log_info "Starting devcontainer..."
+  log_info "Command: $cmd"
+
+  if eval "$cmd"; then
+    log_success "Devcontainer started successfully"
+  else
+    log_error "Failed to start devcontainer"
+    exit 1
+  fi
+}
+
+# Execute nvim setup inside container
+execute_nvim_setup() {
+  local config="$1"
+  local container_home="$2"
+
+  local setup_cmd="sudo apt update && $container_home/dev/run nvim"
+  local cmd="devcontainer exec --workspace-folder . --config \"$config\" bash -c \"$setup_cmd\""
+
+  if [[ "$DRY_RUN" == true ]]; then
+    log_dry "Execute: $cmd"
+    return 0
+  fi
+
+  log_info "Setting up nvim in container..."
+  log_info "Command: $cmd"
+
+  if eval "$cmd"; then
+    log_success "Nvim setup completed successfully"
+  else
+    log_warning "Nvim setup may have failed, but container is running"
+    log_info "You can manually run: devcontainer exec --workspace-folder . --config \"$config\" bash -c \"nvim .\""
+  fi
+}
+
+# Show attachment instructions
+show_attachment_instructions() {
+  local config="$1"
+
+  echo
+  log_success "Setup completed!"
+  echo
+  log_info "To attach to the running devcontainer:"
+  echo "  devcontainer exec --workspace-folder . --config \"$config\" bash -c \"nvim .\""
+  echo
+  log_info "Or to get a shell in the container:"
+  echo "  devcontainer exec --workspace-folder . --config \"$config\" bash"
+  echo
+}
+
+# Main function
+main() {
+  echo "=== $SCRIPT_NAME v$SCRIPT_VERSION ==="
+  echo
+
+  # Parse arguments
+  parse_arguments "$@"
+
+  # Check prerequisites
+  check_devcontainer_installed
+
+  # Discover configurations
+  local configs=()
+  while IFS= read -r config; do
+    [[ -n "$config" ]] && configs+=("$config")
+  done < <(discover_configurations)
+
+  # Display and select configuration
+  display_configurations "${configs[@]}"
+  select_configuration "${configs[@]}"
+
+  # Get container home from selected configuration
+  get_container_home_from_config "$SELECTED_CONFIG"
+
+  # Confirm execution
+  confirm_execution "$SELECTED_CONFIG" "$CONTAINER_HOME"
+
+  # Execute setup
+  execute_devcontainer_up "$SELECTED_CONFIG" "$CONTAINER_HOME"
+  execute_nvim_setup "$SELECTED_CONFIG" "$CONTAINER_HOME"
+
+  # Show instructions
+  show_attachment_instructions "$SELECTED_CONFIG"
+}
+
+# Run main function with all arguments
+main "$@"

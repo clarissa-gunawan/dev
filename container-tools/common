@@ -1,0 +1,200 @@
+#!/bin/bash
+
+# devcontainer-tools/common - Shared functions for devcontainer scripts
+# Provides common functionality for setup, access, and cleanup scripts
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Logging functions
+log_info() {
+  echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+log_success() {
+  echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+log_warning() {
+  echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+log_error() {
+  echo -e "${RED}[ERROR]${NC} $1" >&2
+}
+
+log_dry() {
+  echo -e "${YELLOW}[DRY RUN]${NC} $1"
+}
+
+# Check if devcontainer CLI is installed and accessible
+check_devcontainer_installed() {
+  log_info "Checking devcontainer CLI availability..."
+
+  if ! command -v devcontainer >/dev/null 2>&1; then
+    log_error "devcontainer CLI is not installed or not in PATH"
+    log_error "Please install the Dev Containers CLI:"
+    log_error "  https://code.visualstudio.com/docs/devcontainers/devcontainer-cli"
+    exit 1
+  fi
+
+  # Test if devcontainer command works
+  if ! devcontainer --version >/dev/null 2>&1; then
+    log_error "devcontainer CLI is installed but not working properly"
+    log_error "Please check your installation"
+    exit 1
+  fi
+
+  local version=$(devcontainer --version 2>/dev/null || echo "unknown")
+  log_success "devcontainer CLI found: $version"
+}
+
+# Discover available devcontainer configurations
+discover_configurations() {
+  echo "Discovering devcontainer configurations..." >&2
+
+  local configs=()
+
+  # Find all devcontainer.json files
+  while IFS= read -r -d '' file; do
+    configs+=("$file")
+  done < <(find . -name "devcontainer.json" -type f -print0 2>/dev/null)
+
+  # Sort array
+  if [[ ${#configs[@]} -gt 0 ]]; then
+    IFS=$'\n' configs=($(sort <<<"${configs[*]}"))
+    unset IFS
+  fi
+
+  printf "%s\n" "${configs[@]}"
+}
+
+# Get container user and home from devcontainer.json
+get_container_home_from_config() {
+  local config_file="$1"
+
+  if [[ ! -f "$config_file" ]]; then
+    log_warning "Configuration file not found: $config_file"
+    echo "/home/vscode"
+    return 1
+  fi
+
+  # Try to read from devcontainer.json using jq
+  if command -v jq >/dev/null 2>&1; then
+    local remote_user=$(jq -r '.remoteUser // .containerUser // empty' "$config_file" 2>/dev/null)
+    if [[ -n "$remote_user" && "$remote_user" != "null" ]]; then
+      CONTAINER_USER="$remote_user"
+      CONTAINER_HOME="/home/$remote_user"
+      log_info "Found container user in config: $remote_user"
+      return 0
+    fi
+  else
+    log_warning "jq not found, cannot parse devcontainer.json automatically"
+  fi
+
+  # Fallback to common defaults
+  CONTAINER_USER="vscode"
+  CONTAINER_HOME="/home/vscode"
+  log_info "Using default container user: $CONTAINER_USER"
+  return 1
+}
+
+# Display available configurations
+display_configurations() {
+  local configs=("$@")
+
+  if [[ ${#configs[@]} -eq 0 ]]; then
+    log_error "No devcontainer configurations found in current directory"
+    log_error "Please ensure you have .devcontainer/devcontainer.json files"
+    exit 1
+  fi
+
+  echo
+  log_info "Found ${#configs[@]} devcontainer configuration(s):"
+
+  for i in "${!configs[@]}"; do
+    local config="${configs[$i]}"
+    local num=$((i + 1))
+
+    # Get configuration name/description if possible
+    local name=""
+    local description=""
+
+    if command -v jq >/dev/null 2>&1 && [[ -f "$config" ]]; then
+      name=$(jq -r '.name // empty' "$config" 2>/dev/null || echo "")
+      description=$(jq -r '.description // empty' "$config" 2>/dev/null || echo "")
+    fi
+
+    echo "  $num) $config"
+    if [[ -n "$name" ]]; then
+      echo "     Name: $name"
+    fi
+    if [[ -n "$description" ]]; then
+      echo "     Description: $description"
+    fi
+  done
+}
+
+# Select configuration interactively
+select_configuration() {
+  local configs=("$@")
+  local max_num=${#configs[@]}
+
+  while true; do
+    read -p "Select configuration (1-$max_num): " selection
+
+    if [[ "$selection" =~ ^[0-9]+$ ]]; then
+      local num=$((selection))
+      if [[ $num -ge 1 && $num -le $max_num ]]; then
+        SELECTED_CONFIG="${configs[$((num - 1))]}"
+        log_success "Selected: $SELECTED_CONFIG"
+        return 0
+      fi
+    fi
+
+    log_error "Please enter a number between 1 and $max_num"
+  done
+}
+
+# List configurations (non-interactive)
+list_configurations() {
+  local configs=("$@")
+
+  if [[ ${#configs[@]} -eq 0 ]]; then
+    log_error "No devcontainer configurations found in current directory"
+    return 1
+  fi
+
+  echo
+  log_info "Available devcontainer configurations:"
+  echo
+
+  for i in "${!configs[@]}"; do
+    local config="${configs[$i]}"
+    local num=$((i + 1))
+
+    # Get configuration name/description if possible
+    local name=""
+    local description=""
+
+    if command -v jq >/dev/null 2>&1 && [[ -f "$config" ]]; then
+      name=$(jq -r '.name // empty' "$config" 2>/dev/null || echo "")
+      description=$(jq -r '.description // empty' "$config" 2>/dev/null || echo "")
+    fi
+
+    echo "  $num) $config"
+    if [[ -n "$name" ]]; then
+      echo "     Name: $name"
+    fi
+    if [[ -n "$description" ]]; then
+      echo "     Description: $description"
+    fi
+    echo
+  done
+
+  return 0
+}

@@ -25,7 +25,7 @@ Preview changes without making modifications:
 ./dev-env --dry
 ```
 
-## Run Scripts
+## Run Installation Scripts
 
 Scripts are organized into core and optional categories with brief explanations of each tool.
 
@@ -71,6 +71,50 @@ Run specific script:
 
 ```bash
 ./run neovim
+```
+
+## Container Tools (`container-tools/`)
+
+Development container management utilities for devcontainers.
+
+The main goal is to enable LSP-enabled development in nvim within devcontainer environments.
+
+### ⚠️ Important
+
+These scripts must be run from within a repository that contains `devcontainer.json` files, as they query the system to discover and interact with devcontainer configurations.
+
+### Available Tools
+
+- **setup** - Interactive nvim devcontainer setup tool with LSP configurations
+  - Automatically discovers devcontainer configurations
+  - Interactive configuration selection
+  - Consistent nvim config mounting
+  - Dry run mode for safe testing
+
+- **access** - Simple devcontainer access script
+  - Bash into selected devcontainers
+  - Automatic container user detection
+  - Interactive configuration selection
+
+- **cleanup** - Clean up specific devcontainers
+  - Targeted cleanup for selected devcontainer configurations
+  - Based on devcontainer.json files
+  - Safe container removal
+
+### Usage
+
+```bash
+# Setup nvim in devcontainer
+./container-tools/setup
+
+# Access devcontainer
+./container-tools/access
+
+# Clean up devcontainer
+./container-tools/cleanup
+
+# Preview setup without execution
+./container-tools/setup --dry
 ```
 
 ## Configuration

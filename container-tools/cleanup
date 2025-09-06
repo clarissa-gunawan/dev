@@ -1,0 +1,185 @@
+#!/bin/bash
+
+# devcontainer-tools/cleanup - Clean up specific devcontainer based on devcontainer.json
+# Provides targeted cleanup for selected devcontainer configurations
+
+set -euo pipefail
+
+# Script metadata
+SCRIPT_NAME="devcontainer-tools/cleanup"
+SCRIPT_VERSION="1.0.0"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKSPACE_DIR="$(pwd)"
+
+# Global variables
+SELECTED_CONFIG=""
+CONTAINER_HOME=""
+CONTAINER_USER=""
+
+# Source shared functions
+source "$SCRIPT_DIR/common"
+
+# Check if docker is available
+check_docker_installed() {
+  if ! command -v docker >/dev/null 2>&1; then
+    log_error "Docker is not installed or not in PATH"
+    exit 1
+  fi
+}
+
+# Get the workspace folder path for this config
+get_workspace_folder() {
+  echo "$(pwd)"
+}
+
+# Try to find the container name/ID for this devcontainer
+find_container_info() {
+  local workspace_folder="$1"
+
+  log_info "Looking for running containers for this devcontainer..."
+
+  # Get container info using devcontainer labels
+  local container_info=$(docker ps -a --filter "label=devcontainer.local_folder=$workspace_folder" --format "{{.Names}}|{{.Status}}|{{.ID}}" 2>/dev/null || echo "")
+
+  if [[ -z "$container_info" ]]; then
+    log_warning "No containers found for this devcontainer configuration"
+    log_info "This could mean:"
+    echo "  - The devcontainer is not currently running"
+    echo "  - The devcontainer has never been started"
+    echo "  - The container was created with different settings"
+    echo
+    log_info "You can still proceed with cleanup options that don't require a running container."
+    echo
+    return 1
+  else
+    log_info "Found container(s):"
+    echo "$container_info" | while IFS='|' read -r name status id; do
+      echo "  - Name: $name"
+      echo "    Status: $status"
+      echo "    ID: $id"
+      echo
+    done
+    return 0
+  fi
+}
+
+# Display cleanup options
+display_cleanup_options() {
+  local config="$1"
+
+  log_info "Cleanup options for $config:"
+  echo "  1) Stop running container"
+  echo "  2) Remove container (stop if running, then remove)"
+  echo "  3) Full cleanup (remove container and clean up images)"
+  echo "  4) Show cleanup commands (dry run)"
+  echo
+}
+
+# Select cleanup option
+select_cleanup_option() {
+  while true; do
+    read -p "Select cleanup option (1-4): " cleanup_option
+
+    if [[ "$cleanup_option" =~ ^[1-4]$ ]]; then
+      break
+    fi
+
+    log_error "Please enter a number between 1 and 4"
+  done
+
+  echo "$cleanup_option"
+}
+
+# Execute cleanup based on selection
+execute_cleanup() {
+  local config="$1"
+  local cleanup_option="$2"
+  local workspace_folder="$3"
+
+  case "$cleanup_option" in
+    1)
+      log_info "Stopping devcontainer..."
+      if docker ps --filter "label=devcontainer.local_folder=$workspace_folder" --format "{{.Names}}" | head -1 | xargs -r docker stop; then
+        log_success "Devcontainer stopped successfully"
+      else
+        log_warning "No running devcontainer found to stop"
+      fi
+      ;;
+    2)
+      log_info "Removing devcontainer..."
+      if docker ps -a --filter "label=devcontainer.local_folder=$workspace_folder" --format "{{.Names}}" | head -1 | xargs -r docker rm -f; then
+        log_success "Devcontainer removed successfully"
+      else
+        log_warning "No devcontainer found to remove"
+      fi
+      ;;
+    3)
+      log_info "Performing full cleanup..."
+
+      # Remove container
+      log_info "Removing container..."
+      docker ps -a --filter "label=devcontainer.local_folder=$workspace_folder" --format "{{.Names}}" | head -1 | xargs -r docker rm -f 2>/dev/null || true
+
+      # Clean up unused images
+      log_info "Cleaning up unused images..."
+      docker image prune -f 2>/dev/null || true
+
+      log_success "Full cleanup completed"
+      ;;
+    4)
+      log_info "Cleanup commands that would be executed:"
+      echo
+      echo "  Stop container:"
+      echo "    docker stop \$(docker ps --filter \"label=devcontainer.local_folder=$workspace_folder\" --format \"{{.Names}}\" | head -1)"
+      echo
+      echo "  Remove container:"
+      echo "    docker rm -f \$(docker ps -a --filter \"label=devcontainer.local_folder=$workspace_folder\" --format \"{{.Names}}\" | head -1)"
+      echo
+      echo "  Full cleanup:"
+      echo "    docker rm -f \$(docker ps -a --filter \"label=devcontainer.local_folder=$workspace_folder\" --format \"{{.Names}}\" | head -1)"
+      echo "    docker image prune -f"
+      echo
+      ;;
+  esac
+}
+
+# Main function
+main() {
+  echo "=== $SCRIPT_NAME v$SCRIPT_VERSION ==="
+  echo
+
+  # Check prerequisites
+  check_devcontainer_installed
+  check_docker_installed
+
+  # Discover configurations
+  local configs=()
+  while IFS= read -r config; do
+    [[ -n "$config" ]] && configs+=("$config")
+  done < <(discover_configurations)
+
+  # Display and select configuration
+  display_configurations "${configs[@]}"
+  select_configuration "${configs[@]}"
+
+  # Get container home from selected configuration
+  get_container_home_from_config "$SELECTED_CONFIG"
+
+  # Get workspace folder
+  local workspace_folder=$(get_workspace_folder)
+
+  # Find container info
+  find_container_info "$workspace_folder"
+
+  # Display cleanup options
+  display_cleanup_options "$SELECTED_CONFIG"
+
+  # Select cleanup option
+  local cleanup_option=$(select_cleanup_option)
+
+  # Execute cleanup
+  execute_cleanup "$SELECTED_CONFIG" "$cleanup_option" "$workspace_folder"
+}
+
+# Run main function
+main "$@"

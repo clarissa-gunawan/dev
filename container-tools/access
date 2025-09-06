@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# devcontainer-tools/access - Simple devcontainer access script
+# Just bash into the selected devcontainer
+
+set -euo pipefail
+
+# Script metadata
+SCRIPT_NAME="devcontainer-tools/access"
+SCRIPT_VERSION="1.0.0"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKSPACE_DIR="$(pwd)"
+
+# Global variables
+SELECTED_CONFIG=""
+CONTAINER_HOME=""
+CONTAINER_USER=""
+
+# Source shared functions
+source "$SCRIPT_DIR/common"
+
+# Main function
+main() {
+  echo "=== $SCRIPT_NAME v$SCRIPT_VERSION ==="
+  echo
+
+  # Check prerequisites
+  check_devcontainer_installed
+
+  # Discover configurations
+  local configs=()
+  while IFS= read -r config; do
+    [[ -n "$config" ]] && configs+=("$config")
+  done < <(discover_configurations)
+
+  # Display and select configuration
+  display_configurations "${configs[@]}"
+  select_configuration "${configs[@]}"
+
+  # Get container home from selected configuration
+  get_container_home_from_config "$SELECTED_CONFIG"
+
+  # Bash into the container
+  log_info "Accessing devcontainer..."
+  devcontainer exec --workspace-folder . --config "$SELECTED_CONFIG" bash
+}
+
+# Run main function
+main "$@"
