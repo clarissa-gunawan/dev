@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+set -e
+
+echo "Installing Neovim"
+
+neovim_dir=$HOME/code/neovim
+neovim_version=v0.11.4
+
+# Check for required tools
+command -v git || {
+  echo "Installing git..."
+  sudo apt update && sudo apt install -y git
+}
+command -v gcc || {
+  echo "Installing build tools..."
+  sudo apt update && sudo apt install -y gcc make cmake
+}
+command -v python3 || {
+  echo "Installing python3..."
+  sudo apt update && sudo apt install -y python3 python3-venv python3-pip
+}
+command -v npm || {
+  echo "Installing nodejs and npm..."
+  sudo apt update && sudo apt install -y nodejs npm
+}
+command -v devcontainer || {
+  echo "Installing devcontainer..."
+  sudo npm install -g @devcontainers/cli
+}
+
+# Check if correct version is already installed
+if command -v nvim >/dev/null 2>&1; then
+  current_version=$(nvim --version | head -n1 | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' || echo "")
+  if [[ "$current_version" == "$neovim_version" ]]; then
+    echo "Neovim $neovim_version is already installed"
+    exit 0
+  fi
+fi
+
+# Install additional required packages
+sudo apt install -y gettext lua5.1 liblua5.1-0-dev ripgrep unzip xclip fd-find
+
+# Create fd symlink if it does not exist
+if [[ ! -e $HOME/.local/bin/fd ]]; then
+  mkdir -p ~/.local/bin
+  ln -sf $(which fdfind) ~/.local/bin/fd
+fi
+
+# Install Neovim (remove existing directory first)
+if [[ -d "$neovim_dir" ]]; then
+  rm -rf "$neovim_dir"
+fi
+git clone -b $neovim_version --depth 1 https://github.com/neovim/neovim.git $neovim_dir
+cd $neovim_dir
+make CMAKE_BUILD_TYPE=RelWithDebInfo
+sudo make install
+cd $HOME
+rm -rf $neovim_dir

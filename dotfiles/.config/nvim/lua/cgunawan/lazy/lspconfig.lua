@@ -13,6 +13,32 @@ return {
     },
   },
   {
+    "arnaupv/nvim-devcontainer-cli",
+    opts = {
+      -- By default, if no extra config is added, following nvim_dotfiles are
+      -- installed: "https://github.com/LazyVim/starter"
+      -- This is an example for configuring other nvim_dotfiles inside the docker container
+      nvim_dotfiles_repo = "https://github.com/clarissa-gunawan/dev.git",
+      nvim_dotfiles_install_command = "rm -rf $HOME/.config/nvim && cp dotfiles/.config/nvim $HOME/.config",
+      -- In case you want to change the way the devenvironment is setup, you can also provide your own setup
+      setup_environment_repo = "https://github.com/clarissa-gunawan/dev.git",
+      setup_environment_install_command = "./run nvim",
+    },
+    keys = {
+    -- stylua: ignore
+    {
+      "<leader>cdu",
+      ":DevcontainerUp<cr>",
+      desc = "Up the DevContainer",
+    },
+      {
+        "<leader>cdc",
+        ":DevcontainerConnect<cr>",
+        desc = "Connect to DevContainer",
+      },
+    },
+  },
+  {
     -- Main LSP Configuration
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -24,6 +50,8 @@ return {
       "WhoIsSethDaniel/mason-tool-installer.nvim",
       -- Useful status updates for LSP.
       { "j-hui/fidget.nvim", opts = {} },
+      -- LSP lines - allow for multiple lines of diagnostics
+      { "https://git.sr.ht/~whynothugo/lsp_lines.nvim" },
       -- coq_nvim completion engine
       {
         "ms-jpq/coq_nvim",
@@ -209,6 +237,7 @@ return {
       })
       -- Diagnostic Config
       -- See :help vim.diagnostic.Opts
+      require("lsp_lines").setup()
       vim.diagnostic.config {
         severity_sort = true,
         float = { border = "rounded", source = "if_many" },
@@ -234,7 +263,11 @@ return {
             return diagnostic_message[diagnostic.severity]
           end,
         },
+        virtual_lines = false,
       }
+      vim.keymap.set("", "<leader>ll", function()
+        require("lsp_lines").toggle()
+      end, { desc = "Toggle lsp_lines" })
       -- LSP servers and clients are able to communicate to each other what features they support.
       --  By default, Neovim doesn't support everything that is in the LSP specification.
       --  When you add coq_nvim, Neovim now has *more* capabilities.
