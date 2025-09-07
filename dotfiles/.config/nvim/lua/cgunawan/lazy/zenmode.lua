@@ -14,7 +14,21 @@ return {
       vim.wo.wrap = false
       vim.wo.number = true
       vim.wo.rnu = true
-    end)
+    end, { desc = "Zen mode (90 width)" })
+
+    vim.keymap.set("n", "<leader>zZ", function()
+      require("zen-mode").setup {
+        window = {
+          width = 80,
+          options = {},
+        },
+      }
+      require("zen-mode").toggle()
+      vim.wo.wrap = false
+      vim.wo.number = false
+      vim.wo.rnu = false
+      vim.opt.colorcolumn = "0"
+    end, { desc = "Zen mode (80 width, minimal)" })
 
     vim.keymap.set("n", "<leader>zZ", function()
       require("zen-mode").setup {

@@ -6,7 +6,7 @@ return {
     },
 
     config = function()
-      vim.keymap.set("n", "<leader>gs", vim.cmd.Git)
+      vim.keymap.set("n", "<leader>gs", vim.cmd.Git, { desc = "Git status" })
       local fugitive_group = vim.api.nvim_create_augroup("fugitive_group", {})
       local autocmd = vim.api.nvim_create_autocmd
       autocmd("BufWinEnter", {
@@ -20,19 +20,19 @@ return {
           local opts = { buffer = bufnr, remap = false }
           vim.keymap.set("n", "<leader>p", function()
             vim.cmd.Git "push"
-          end, opts)
+          end, { desc = "Git push" })
 
           -- NOTE: Rebase always
           vim.keymap.set("n", "<leader>P", function()
             vim.cmd.Git { "pull", "--rebase" }
-          end, opts)
+          end, { desc = "Git pull (rebase)" })
 
           -- NOTE: Easily set the branch remotely
-          vim.keymap.set("n", "<leader>t", ":Git push -u origin ", opts)
+          vim.keymap.set("n", "<leader>t", ":Git push -u origin ", { desc = "Git push upstream" })
         end,
       })
-      vim.keymap.set("n", "gu", "<cmd>diffget //2<CR>")
-      vim.keymap.set("n", "gh", "<cmd>diffget //3<CR>")
+      vim.keymap.set("n", "gu", "<cmd>diffget //2<CR>", { desc = "Get diff from left" })
+      vim.keymap.set("n", "gh", "<cmd>diffget //3<CR>", { desc = "Get diff from right" })
     end,
   },
 
