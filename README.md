@@ -1,6 +1,6 @@
 # DEV ⚡
 
-A lightweight setup for installing development tools and configurations without manual searching. This repository provides automated scripts to install essential development tools with personalized configurations using Iceberg Dark and Nord themes with DejaVu Sans Mono font. Everything installs in under 20 minutes, including dependencies.
+My ultimate lightweight setup for installing development tools and configurations without manual searching. This repository provides automated scripts to install essential development tools with personalized configurations using Iceberg Dark and Nord themes with DejaVu Sans Mono font. Everything installs in under 20 minutes, including dependencies.
 
 ## Quick Start
 
@@ -73,51 +73,73 @@ Run specific script:
 ./run neovim
 ```
 
-## Container Tools (`container-tools/`)
+## Workflow Scripts (`dotfiles/.local/scripts/`)
 
-Development container management utilities for devcontainers.
-
-The main goal is to enable LSP-enabled development in nvim within devcontainer environments.
-
-### ⚠️ Important
-
-These scripts must be run from within a repository that contains `devcontainer.json` files, as they query the system to discover and interact with devcontainer configurations.
+Workflow automation scripts for enhanced development productivity.
 
 ### Available Tools
 
-- **setup** - Interactive nvim devcontainer setup tool with LSP configurations
-  - Automatically discovers devcontainer configurations
-  - Interactive configuration selection
-  - Consistent nvim config mounting
-  - Dry run mode for safe testing
+- **tmux-sessionizer** - Intelligent tmux session management
+  - **Ctrl+F** - Trigger tmux-sessionizer from `anywhere` in the terminal
+  - Fuzzy-find directories in your home folder
+  - Automatically creates or switches to tmux sessions based on directory names
+  - Integrates with fd/find for fast directory discovery
+  - Runs `ready-tmux` automatically when creating new sessions
 
-- **access** - Simple devcontainer access script
-  - Bash into selected devcontainers
-  - Automatic container user detection
-  - Interactive configuration selection
+- **cht.sh** - Interactive cheat sheet access
+  - **<leader-i>** - Trigger cht.sh from within `tmux` sessions
+  - Quick access to programming language cheat sheets
+  - Supports fuzzy search across all available languages and tools
+  - Caches language lists for faster subsequent searches
+  - Interactive preview of cheat sheet content
+  - Supports core utilities (find, xargs, sed, awk, grep, docker, etc.)
 
-- **cleanup** - Clean up specific devcontainers
-  - Targeted cleanup for selected devcontainer configurations
-  - Based on devcontainer.json files
-  - Safe container removal
+- **container-flow** - Devcontainer management wrapper
+
+  ⚠️ Important `container-flow` must run from within a repository that contains `devcontainer.json` files, as they query the system to discover and interact with devcontainer configurations.
+  - Simple interface for devcontainer operations
+  - Can be run from anywhere in the filesystem
+  - Automatically locates the container-tools directory
+
+  #### Container Tools (sub-tools of container-flow)
+  - **setup** - Interactive nvim devcontainer setup tool with LSP configurations
+    - Automatically discovers devcontainer configurations
+    - Interactive configuration selection
+    - Consistent nvim config mounting
+    - Dry run mode for safe testing
+
+  - **access** - Simple devcontainer access script
+    - Bash into selected devcontainers
+    - Automatic container user detection
+    - Interactive configuration selection
+
+  - **cleanup** - Clean up specific devcontainers
+    - Targeted cleanup for selected devcontainer configurations
+    - Based on devcontainer.json files
+    - Safe container removal
 
 ### Usage
 
+All workflow scripts can be run from anywhere in your filesystem:
+
 ```bash
-# Setup nvim in devcontainer
-./container-tools/setup
+# Tmux session management
+tmux-sessionizer                    # Interactive directory selection
+tmux-sessionizer /path/to/project  # Direct session creation
 
-# Access devcontainer
-./container-tools/access
+# Cheat sheet access
+cht.sh                             # Interactive language/tool selection
 
-# Clean up devcontainer
-./container-tools/cleanup
-
-# Preview setup without execution
-./container-tools/setup --dry
+# Devcontainer management
+container-flow setup               # Setup nvim in devcontainer
+container-flow access              # Access devcontainer
+container-flow cleanup             # Clean up devcontainer
+container-flow setup --dry         # Preview setup without execution
 ```
 
-## Configuration
+**Note:** All workflow scripts are installed to your system PATH when you run `./dev-env`, allowing you to execute them from any directory in your filesystem.
+
+## Configuration (dotfiles/)
 
 The `./dev-env` script copies dotfiles to your home directory, replacing existing configurations.
 
