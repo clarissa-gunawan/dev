@@ -67,14 +67,6 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
 
--- Vim Be Good (start and stop) learning how to Vim
-vim.keymap.set("n", "<leader>vwm", function()
-  require("vim-with-me").StartVimWithMe()
-end, { desc = "Start Vim with Me" })
-vim.keymap.set("n", "<leader>svwm", function()
-  require("vim-with-me").StopVimWithMe()
-end, { desc = "Stop Vim with Me" })
-
 -- Helps with pasting a visual block (foo) over another visual block (bar)
 -- It deletes (puts) bar in the void
 -- Instead of pasting foo over bar but then pasting bar subsequently
@@ -95,7 +87,12 @@ vim.keymap.set("n", "Q", "<nop>", { desc = "Disable macro recording" })
 -- Trigger Tmux (move to a different project)
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>", { desc = "Tmux sessionizer" })
 vim.keymap.set("n", "<M-h>", "<cmd>silent !tmux-sessionizer -s 0 --vsplit<CR>", { desc = "Tmux sessionizer (vsplit)" })
-vim.keymap.set("n", "<M-H>", "<cmd>silent !tmux neww tmux-sessionizer -s 0<CR>", { desc = "Tmux sessionizer (new window)" })
+vim.keymap.set(
+  "n",
+  "<M-H>",
+  "<cmd>silent !tmux neww tmux-sessionizer -s 0<CR>",
+  { desc = "Tmux sessionizer (new window)" }
+)
 
 -- Quick Fix List (centers it)
 vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz", { desc = "Next quickfix item" })
@@ -106,7 +103,12 @@ vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz", { desc = "Previous location
 -- Highlight whatever you want to replace
 -- Trigger the map and a menu pops up
 -- then you can replace the highlighted word with anything
-vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Replace current word" })
+vim.keymap.set(
+  "n",
+  "<leader>ss",
+  [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
+  { desc = "Replace current word" }
+)
 
 -- Make current file an executable
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true, desc = "Make file executable" })
