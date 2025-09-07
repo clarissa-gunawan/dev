@@ -2,53 +2,64 @@
 
 # Check if connected
 if [[ -z "$(ip route show default)" ]]; then
-    echo "<span color='#6b7089'>● NET [DOWN]</span> Disconnected"
-    exit 0
+  echo "<span color='#6b7089'>● NET [DOWN]</span> Disconnected"
+  exit 0
 fi
 
 # Check for WiFi interface
 WIFI_INTERFACE=$(iw dev 2>/dev/null | awk '$1=="Interface"{print $2}' | head -1)
 
 if [ -n "$WIFI_INTERFACE" ]; then
-    # Get WiFi info
-    WIFI_INFO=$(iw dev "$WIFI_INTERFACE" link 2>/dev/null)
-    if [ $? -eq 0 ] && echo "$WIFI_INFO" | grep -q "Connected"; then
-        SSID=$(echo "$WIFI_INFO" | grep "SSID" | awk '{print $2}')
-        SIGNAL=$(iw dev "$WIFI_INTERFACE" station dump 2>/dev/null | grep "signal:" | awk '{print $2}' | head -1)
-        
-        # Create signal strength bar
-        create_signal_bar() {
-            local signal=$1
-            if [ "$signal" -gt -50 ]; then
-                echo "[████░]"  # Strong
-            elif [ "$signal" -gt -70 ]; then
-                echo "[███░░]"  # Medium
-            else
-                echo "[██░░░]"  # Weak
-            fi
-        }
-        
-        # Signal strength color and dot
-        if [ -n "$SIGNAL" ]; then
-            SIGNAL_NUM=${SIGNAL%% *}
-            if [ "$SIGNAL_NUM" -gt -50 ]; then
-                COLOR="#b4be82"  # Green - Strong
-                DOT="●"
-            elif [ "$SIGNAL_NUM" -gt -70 ]; then
-                COLOR="#e2c792"  # Yellow - Medium
-                DOT="●"
-            else
-                COLOR="#e27878"  # Red - Weak
-                DOT="●"
-            fi
-            SIGNAL_BAR=$(create_signal_bar $SIGNAL_NUM)
-            echo "<span color='$COLOR'>$DOT NET $SIGNAL_BAR</span> $SSID ${SIGNAL}dBm"
-        else
-            echo "<span color='#91acd1'>● NET [WIFI]</span> $SSID"
-        fi
+  # Get WiFi info
+  WIFI_INFO=$(iw dev "$WIFI_INTERFACE" link 2>/dev/null)
+  if [ $? -eq 0 ] && echo "$WIFI_INFO" | grep -q "Connected"; then
+    SSID=$(echo "$WIFI_INFO" | grep "SSID" | awk '{print $2}')
+    SIGNAL=$(iw dev "$WIFI_INTERFACE" station dump 2>/dev/null | grep "signal:" | awk '{print $2}' | head -1)
+
+    # Create signal strength bar
+    create_signal_bar() {
+      local signal=$1
+      if [ "$signal" -gt -50 ]; then
+        echo "[████░]" # Strong
+      elif [ "$signal" -gt -70 ]; then
+        echo "[███░░]" # Medium
+      else
+        echo "[██░░░]" # Weak
+      fi
+    }
+
+    # Signal strength color and dot
+    if [ -n "$SIGNAL" ]; then
+      SIGNAL_NUM=${SIGNAL%% *}
+      if [ "$SIGNAL_NUM" -gt -50 ]; then
+        COLOR="#b4be82" # Green - Strong
+        DOT="●"
+      elif [ "$SIGNAL_NUM" -gt -70 ]; then
+        COLOR="#e2c792" # Yellow - Medium
+        DOT="●"
+      else
+        COLOR="#e27878" # Red - Weak
+        DOT="●"
+      fi
+      SIGNAL_BAR=$(create_signal_bar $SIGNAL_NUM)
+      echo "<span color='$COLOR'>$DOT NET $SIGNAL_BAR</span> $SSID ${SIGNAL}dBm"
     else
-        echo "<span color='#91acd1'>● NET [CONN]</span> Ethernet"
+      echo "<span color='#91acd1'>● NET [WIFI]</span> $SSID"
     fi
+  fi
 else
+  # Get ethernet interface info
+  ETH_INTERFACE=$(ip link show | grep -E "(enp|eth)" | grep -v "NO-CARRIER" | awk -F: '{print $2}' | tr -d ' ' | head -1)
+  if [ -n "$ETH_INTERFACE" ]; then
+    ETH_IP=$(ip addr show "$ETH_INTERFACE" 2>/dev/null | grep "inet " | awk '{print $2}' | cut -d'/' -f1 | head -1)
+    ETH_SPEED=$(ethtool "$ETH_INTERFACE" 2>/dev/null | grep "Speed:" | awk '{print $2}' | head -1)
+
+    if [ -n "$ETH_IP" ]; then
+      echo "<span color='#91acd1'>● NET [ETH]</span> $ETH_INTERFACE $ETH_IP ${ETH_SPEED:-1Gb/s}"
+    else
+      echo "<span color='#91acd1'>● NET [ETH]</span> $ETH_INTERFACE ${ETH_SPEED:-1Gb/s}"
+    fi
+  else
     echo "<span color='#91acd1'>● NET [CONN]</span> Ethernet"
+  fi
 fi
