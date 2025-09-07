@@ -16,6 +16,7 @@ DRY_RUN=false
 SELECTED_CONFIG=""
 CONTAINER_HOME=""
 CONTAINER_USER=""
+CONTAINER_ID=""
 
 # Source shared functions
 source "$SCRIPT_DIR/common"
@@ -80,6 +81,54 @@ parse_arguments() {
   done
 }
 
+# Get container ID from devcontainer
+get_container_id() {
+  local config="$1"
+  
+  log_info "Detecting container ID..."
+  
+  # Method 1: Try to get container ID from cgroup
+  local container_id=$(devcontainer exec --workspace-folder . --config "$config" --quiet bash -c "cat /proc/self/cgroup | grep -E 'docker|containerd' | head -1 | cut -d/ -f3" 2>/dev/null || echo "")
+  
+  # Method 2: Try to get from /proc/self/mountinfo
+  if [[ -z "$container_id" ]]; then
+    container_id=$(devcontainer exec --workspace-folder . --config "$config" --quiet bash -c "grep -o 'containers/[a-f0-9]*' /proc/self/mountinfo | head -1 | cut -d/ -f2" 2>/dev/null || echo "")
+  fi
+  
+  # Method 3: Try to get from hostname (short ID)
+  if [[ -z "$container_id" ]]; then
+    container_id=$(devcontainer exec --workspace-folder . --config "$config" --quiet bash -c "hostname" 2>/dev/null || echo "")
+  fi
+  
+  # Method 4: Try to get from docker ps (if docker is available on host)
+  if [[ -z "$container_id" ]]; then
+    # Get the workspace folder name to match against running containers
+    local workspace_name=$(basename "$WORKSPACE_DIR")
+    container_id=$(docker ps --filter "label=devcontainer.local_folder=$WORKSPACE_DIR" --format "{{.ID}}" 2>/dev/null | head -1 || echo "")
+  fi
+  
+  # Method 5: Try to get from docker ps by image name
+  if [[ -z "$container_id" ]]; then
+    # Try to match by devcontainer image
+    container_id=$(docker ps --format "{{.ID}} {{.Image}}" | grep -E "(devcontainer|vscode)" | head -1 | cut -d' ' -f1 2>/dev/null || echo "")
+  fi
+  
+  # Method 6: Try to get the most recent container
+  if [[ -z "$container_id" ]]; then
+    container_id=$(docker ps --format "{{.ID}}" | head -1 2>/dev/null || echo "")
+  fi
+  
+  if [[ -z "$container_id" ]]; then
+    log_error "Could not determine container ID using any method"
+    log_error "Please ensure the devcontainer is running and accessible"
+    log_error "You can also manually specify the container ID by setting CONTAINER_ID environment variable"
+    exit 1
+  fi
+  
+  CONTAINER_ID="$container_id"
+  log_success "Container ID detected: $CONTAINER_ID"
+}
+
 # Confirm execution with user
 confirm_execution() {
   local config="$1"
@@ -89,8 +138,8 @@ confirm_execution() {
   log_info "Execution Plan:"
   echo "  Configuration: $config"
   echo "  Container HOME: $container_home"
-  echo "  Mount nvim config: $HOME/.config/nvim -> $container_home/.config/nvim"
-  echo "  Mount dev directory: $HOME/dev -> $container_home/dev"
+  echo "  Copy nvim config from host: $HOME/.config/nvim -> container:$container_home/.config/nvim"
+  echo "  Copy dev directory from host: $HOME/dev -> container:$container_home/dev"
   echo
 
   if [[ "$DRY_RUN" == true ]]; then
@@ -120,10 +169,7 @@ execute_devcontainer_up() {
   local config="$1"
   local container_home="$2"
 
-  local mount_nvim="type=bind,source=$HOME/.config/nvim,target=$container_home/.config/nvim"
-  local mount_dev="type=bind,source=$HOME/dev,target=$container_home/dev"
-
-  local cmd="devcontainer up --workspace-folder . --config \"$config\" --mount \"$mount_nvim\" --mount \"$mount_dev\""
+  local cmd="devcontainer up --workspace-folder . --config \"$config\""
 
   if [[ "$DRY_RUN" == true ]]; then
     log_dry "Execute: $cmd"
@@ -141,12 +187,76 @@ execute_devcontainer_up() {
   fi
 }
 
+# Copy files using docker cp
+copy_files_to_container() {
+  local config="$1"
+  local container_home="$2"
+
+  # Check if container ID is already set (e.g., from environment variable)
+  if [[ -n "${CONTAINER_ID:-}" ]]; then
+    log_info "Using provided container ID: $CONTAINER_ID"
+  else
+    # Get container ID
+    get_container_id "$config"
+  fi
+
+  # Copy nvim config if it exists
+  if [[ -d "$HOME/.config/nvim" ]]; then
+    local cmd="docker cp $HOME/.config/nvim/. $CONTAINER_ID:$container_home/.config/nvim/"
+    
+    if [[ "$DRY_RUN" == true ]]; then
+      log_dry "Execute: $cmd"
+    else
+      log_info "Copying nvim config to container..."
+      log_info "Command: $cmd"
+      
+      if eval "$cmd"; then
+        log_success "Successfully copied nvim config to container"
+      else
+        log_warning "Failed to copy nvim config to container"
+      fi
+    fi
+  else
+    log_warning "No nvim config found at $HOME/.config/nvim"
+  fi
+
+  # Copy dev directory if it exists
+  if [[ -d "$HOME/dev" ]]; then
+    local cmd="docker cp $HOME/dev/. $CONTAINER_ID:$container_home/dev/"
+    
+    if [[ "$DRY_RUN" == true ]]; then
+      log_dry "Execute: $cmd"
+    else
+      log_info "Copying dev directory to container..."
+      log_info "Command: $cmd"
+      
+      if eval "$cmd"; then
+        log_success "Successfully copied dev directory to container"
+      else
+        log_warning "Failed to copy dev directory to container"
+      fi
+    fi
+  else
+    log_warning "No dev directory found at $HOME/dev"
+  fi
+}
+
 # Execute nvim setup inside container
 execute_nvim_setup() {
   local config="$1"
   local container_home="$2"
 
-  local setup_cmd="sudo apt update && $container_home/dev/run nvim"
+  # Install nvim if not present and run it
+  local setup_cmd="
+    # Install nvim if not present
+    if ! command -v nvim >/dev/null 2>&1; then
+      sudo apt update && sudo apt install -y neovim
+    fi
+    
+    # Run nvim
+    $container_home/dev/run nvim
+  "
+  
   local cmd="devcontainer exec --workspace-folder . --config \"$config\" bash -c \"$setup_cmd\""
 
   if [[ "$DRY_RUN" == true ]]; then
@@ -209,6 +319,7 @@ main() {
 
   # Execute setup
   execute_devcontainer_up "$SELECTED_CONFIG" "$CONTAINER_HOME"
+  copy_files_to_container "$SELECTED_CONFIG" "$CONTAINER_HOME"
   execute_nvim_setup "$SELECTED_CONFIG" "$CONTAINER_HOME"
 
   # Show instructions
