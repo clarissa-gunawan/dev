@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-tmux rename-window "term"
+tmux rename-window "git"
+tmux send-keys -t "git" "lazygit" ^M
 
 tmux new-window -n "nvim"
 tmux send-keys -t "nvim" "nvim ." ^M
 
-tmux new-window -n "git"
-tmux send-keys -t "git" "lazygit" ^M
+tmux new-window -n "term"
 
 tmux select-window -t "nvim"
