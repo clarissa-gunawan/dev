@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# container-flow - Simple wrapper for devcontainer scripts
+# Usage: container-flow {setup|access|cleanup}
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DEVCONTAINER_DIR="$SCRIPT_DIR/container-tools"
+
+case "$1" in
+  setup)
+    echo "  Setting up devcontainer..."
+    "$DEVCONTAINER_DIR/setup"
+    ;;
+  access)
+    echo "  Accessing devcontainer..."
+    "$DEVCONTAINER_DIR/access"
+    ;;
+  cleanup)
+    echo "󰃢 Cleaning up devcontainer..."
+    "$DEVCONTAINER_DIR/cleanup"
+    ;;
+  *)
+    echo "Usage: container-flow {setup|access|cleanup}"
+    echo ""
+    echo "Commands:"
+    echo "  setup   - Set up the devcontainer environment"
+    echo "  access  - Access the running devcontainer"
+    echo "  cleanup - Clean up devcontainer resources"
+    exit 1
+    ;;
+esac
