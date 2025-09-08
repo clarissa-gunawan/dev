@@ -417,6 +417,7 @@ return {
         -- YAML tools
         "yamlfmt",
         "yamlfix",
+        "yamllint",
         -- Additional formatters used in conform
         "prettierd", -- JSON/Markdown formatter
         "prettier", -- Fallback formatter
@@ -431,7 +432,6 @@ return {
         "ts_ls",
         "gopls",
         "rust_analyzer",
-        "xmlformatter",
       })
       require("mason-tool-installer").setup {
         ensure_installed = ensure_installed,

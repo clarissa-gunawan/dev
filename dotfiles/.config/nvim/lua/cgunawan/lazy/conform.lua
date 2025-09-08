@@ -115,7 +115,7 @@ return {
         html = { "prettierd", "prettier", stop_after_first = true },
         css = { "prettierd", "prettier", stop_after_first = true },
         scss = { "prettierd", "prettier", stop_after_first = true },
-        xml = { "xmlformatter", "prettierd", "prettier", stop_after_first = true },
+        xml = { "prettierd", "prettier", stop_after_first = true },
         ansible = { "prettierd", "prettier" },
         cmake = { "prettierd", "prettier" },
         yaml = { "yamlfmt", "yamlfix", stop_after_first = true },
