@@ -40,7 +40,7 @@ echo "Modifying desktop entry to launch GUI mode..."
 sed -i 's/^Exec=flameshot$/Exec=flameshot gui/' "$USER_DESKTOP"
 
 # Verify the change was made
-if grep -q "^Exec=flameshot gui$" "$USER_DESKTOP"; then
+if grep -q "^Exec=flameshot gui" "$USER_DESKTOP"; then
     echo "✓ Successfully modified Flameshot desktop entry"
     echo "✓ Flameshot will now launch in GUI mode when clicked"
     echo ""
