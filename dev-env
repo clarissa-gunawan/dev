@@ -95,14 +95,19 @@ copy_config() {
 SHARED_CONFIGS=(
   "tmux"
   "ghostty"
+  "nvim"
+  "lazygit"
+  "bat"
+  "yazi"
+  "opencode"
 )
 
 # Linux-only configs
 LINUX_CONFIGS=(
-  # "i3"
-  # "i3blocks"
-  # "rofi"
-  # "picom"
+  "i3"
+  "i3blocks"
+  "rofi"
+  "picom"
 )
 
 # Mac-only configs (add as needed)
@@ -135,6 +140,30 @@ elif [[ "$OS" == "mac" ]]; then
     fi
     copy_config "$config"
   done
+fi
+
+# Copy .local/scripts
+LOCAL_SCRIPTS_SRC="$script_dir/dotfiles/.local/scripts"
+LOCAL_SCRIPTS_DEST="$HOME/.local/scripts"
+
+if [[ -d "$LOCAL_SCRIPTS_SRC" ]]; then
+  if [[ -z "$filter" || "scripts" == *"$filter"* ]]; then
+    execute mkdir -p "$HOME/.local"
+    execute rm -rf "$LOCAL_SCRIPTS_DEST"
+    execute cp -r "$LOCAL_SCRIPTS_SRC" "$LOCAL_SCRIPTS_DEST"
+    execute chmod +x "$LOCAL_SCRIPTS_DEST"/*
+    log_success "Copied .local/scripts"
+  fi
+fi
+
+# Copy .bashrc
+BASHRC_SRC="$script_dir/dotfiles/.bashrc"
+
+if [[ -f "$BASHRC_SRC" ]]; then
+  if [[ -z "$filter" || "bashrc" == *"$filter"* ]]; then
+    execute cp "$BASHRC_SRC" "$HOME/.bashrc"
+    log_success "Copied .bashrc"
+  fi
 fi
 
 echo ""
