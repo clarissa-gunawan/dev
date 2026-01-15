@@ -94,8 +94,15 @@ function y() {
 }
 
 # =============================================================================
-# Tmux sessionizer keybinding (bash only - zsh uses different binding)
+# Tmux sessionizer keybindings
 # =============================================================================
 if [[ "$CURRENT_SHELL" == "bash" ]]; then
     bind '"\C-f":"tmux-sessionizer\n"' 2>/dev/null
+elif [[ "$CURRENT_SHELL" == "zsh" ]]; then
+    tmux-sessionizer-widget() {
+        BUFFER="tmux-sessionizer"
+        zle accept-line
+    }
+    zle -N tmux-sessionizer-widget
+    bindkey '^F' tmux-sessionizer-widget
 fi
