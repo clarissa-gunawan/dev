@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
+# Source platform detection
+script_dir=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+source "$script_dir/runs/_platform.sh"
+
+OS=$(detect_os)
+
 # Colors
 GREEN='\033[0;32m'
 RED='\033[0;31m'
@@ -17,8 +23,7 @@ CROSS="✗"
 SKIP="○"
 ARROW="→"
 
-script_dir=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
-runs_dir="./runs"
+runs_dir="$script_dir/runs"
 filters=()
 dry="0"
 executed_count=0
@@ -33,7 +38,7 @@ while [[ $# > 0 ]]; do
   if [[ $1 == "--dry" ]]; then
     dry="1"
   elif [[ $1 == "--optional" ]]; then
-    runs_dir="./runs_optional"
+    runs_dir="$script_dir/runs_optional"
   else
     filters+=("$1")
   fi
@@ -43,6 +48,7 @@ done
 # Header
 echo -e "${BOLD}${BLUE}Installation Script Runner${RESET}"
 echo -e "Directory: ${CYAN}${script_dir}${RESET}"
+echo -e "Platform: ${CYAN}${OS}${RESET}"
 
 if [[ ${#filters[@]} -gt 0 ]]; then
   echo -e "Filter: ${CYAN}${filters[*]}${RESET}"
@@ -71,18 +77,35 @@ log_execute() {
   echo -e "${GREEN}${ARROW}${RESET} ${BOLD}$@${RESET}"
 }
 
-execute() {
-  local script_name="$1"
-  log_execute "Executing: $script_name"
+# Find script path - platform-specific takes precedence over common
+find_script() {
+  local name="$1"
+  local base_dir="$2"
 
-  log "$runs_dir/$script_name"
+  # Check platform-specific first
+  if [[ -x "$base_dir/$OS/$name" ]]; then
+    echo "$base_dir/$OS/$name"
+  # Then check common
+  elif [[ -x "$base_dir/common/$name" ]]; then
+    echo "$base_dir/common/$name"
+  fi
+}
+
+execute() {
+  local script_path="$1"
+  local script_name=$(basename "$script_path")
+  local script_location=$(dirname "$script_path" | xargs basename)
+
+  log_execute "Executing: $script_name (from $script_location/)"
+
+  log "$script_path"
   if [[ $dry == "1" ]]; then
     successful_scripts+=("$script_name")
     success_count=$((success_count + 1))
     return 0
   fi
 
-  if "$runs_dir/$script_name"; then
+  if "$script_path"; then
     echo -e "${GREEN}${CHECK}${RESET} ${GREEN}Success${RESET}"
     successful_scripts+=("$script_name")
     success_count=$((success_count + 1))
@@ -97,23 +120,48 @@ execute() {
 
 cd "$script_dir"
 
-# Find and process scripts
-scripts=$(find $runs_dir -maxdepth 1 -mindepth 1 -executable -type f 2>/dev/null)
+# Collect all unique script names from common/ and $OS/
+script_names=""
 
-if [[ -z "$scripts" ]]; then
-  echo -e "${YELLOW}No executable scripts found in $runs_dir${RESET}"
+# Scan common directory
+if [[ -d "$runs_dir/common" ]]; then
+  for script in "$runs_dir/common"/*; do
+    [[ -x "$script" && -f "$script" ]] || continue
+    script_names="$script_names $(basename "$script")"
+  done
+fi
+
+# Scan platform-specific directory
+if [[ -d "$runs_dir/$OS" ]]; then
+  for script in "$runs_dir/$OS"/*; do
+    [[ -x "$script" && -f "$script" ]] || continue
+    script_names="$script_names $(basename "$script")"
+  done
+fi
+
+# Remove duplicates and sort
+script_names=$(echo "$script_names" | tr ' ' '\n' | sort -u | grep -v '^$')
+
+if [[ -z "$script_names" ]]; then
+  echo -e "${YELLOW}No executable scripts found in $runs_dir/common or $runs_dir/$OS${RESET}"
   exit 1
 fi
 
-for script in $scripts; do
-  script_name=$(basename "$script")
+# Process scripts in sorted order
+for script_name in $script_names; do
+  # Find the script path (platform takes precedence)
+  script_path=$(find_script "$script_name" "$runs_dir")
+
+  if [[ -z "$script_path" ]]; then
+    continue
+  fi
 
   matches_filter=false
   if [[ ${#filters[@]} -eq 0 ]]; then
     matches_filter=true
   else
     for filter in "${filters[@]}"; do
-      if echo "$script" | grep -q "$filter"; then
+      if echo "$script_name" | grep -q "$filter"; then
         matches_filter=true
         break
       fi
@@ -127,7 +175,7 @@ for script in $scripts; do
     continue
   fi
 
-  execute "$script_name"
+  execute "$script_path"
   executed_count=$((executed_count + 1))
   echo ""
 done

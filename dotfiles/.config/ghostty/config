@@ -1,7 +1,12 @@
-theme = Iceberg Dark
+# theme = Iceberg Dark
 # theme = Ayu Mirage
 # font-family = "DejaVu Sans Mono"
 # font-family = "Ubuntu Sans Mono"
 font-size = 14
 background-opacity = 0.98
+
+# Linux
 gtk-titlebar = true
+
+# Mac
+macos-titlebar-style = native

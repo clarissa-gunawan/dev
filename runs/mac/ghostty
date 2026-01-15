@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../_platform.sh"
+
+ensure_brew
+
+if [[ -d "/Applications/Ghostty.app" ]]; then
+    echo "Ghostty is already installed. Upgrading..."
+    brew upgrade --cask ghostty || echo "Ghostty is already up to date"
+else
+    brew install --cask ghostty
+fi
