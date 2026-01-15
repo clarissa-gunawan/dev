@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../_platform.sh"
+
+echo "Install Python and tools"
+
+ensure_brew
+
+brew install python pyenv
+
+echo "Python installed. Use 'pyenv' to manage Python versions."

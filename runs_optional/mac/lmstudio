@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../../runs/_platform.sh"
+
+echo "Install LM Studio"
+
+ensure_brew
+
+if [[ -d "/Applications/LM Studio.app" ]]; then
+    echo "LM Studio is already installed. Upgrading..."
+    brew upgrade --cask lm-studio || echo "LM Studio is already up to date"
+else
+    brew install --cask lm-studio
+fi

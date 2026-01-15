@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+
+echo "Install OpenCode"
+
+# OpenCode installer script
+# https://opencode.ai/docs/
+cd /tmp
+curl -fsSL https://opencode.ai/install | bash

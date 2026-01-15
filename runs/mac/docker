@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../_platform.sh"
+
+echo "Install OrbStack (Docker alternative)"
+
+ensure_brew
+
+if [[ -d "/Applications/OrbStack.app" ]]; then
+    echo "OrbStack is already installed. Upgrading..."
+    brew upgrade --cask orbstack || echo "OrbStack is already up to date"
+else
+    brew install --cask orbstack
+    echo "Open OrbStack.app to complete setup"
+fi

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../_platform.sh"
+
+echo "Install Raycast (launcher)"
+
+ensure_brew
+
+if [[ -d "/Applications/Raycast.app" ]]; then
+    echo "Raycast is already installed. Upgrading..."
+    brew upgrade --cask raycast || echo "Raycast is already up to date"
+else
+    brew install --cask raycast
+fi

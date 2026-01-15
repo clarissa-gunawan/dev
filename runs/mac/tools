@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../_platform.sh"
+
+echo "Install CLI tools"
+
+ensure_brew
+
+brew install \
+    coreutils \
+    findutils \
+    ripgrep \
+    fd \
+    bat \
+    eza \
+    zoxide \
+    fzf \
+    jq \
+    wget \
+    curl \
+    tree \
+    htop

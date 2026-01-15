@@ -96,7 +96,7 @@ return {
             },
             args = { "--log-level", "DEBUG", "--quiet" },
             runner = "pytest",
-            -- Python path detection
+            -- Python path detection (cross-platform)
             python = function()
               -- Try to detect virtual environment
               local venv_path = os.getenv "VIRTUAL_ENV"
@@ -121,8 +121,12 @@ return {
                   return vim.trim(result) .. "/bin/python"
                 end
               end
-              -- Fallback to system python
-              return "python3"
+              -- Platform-specific fallback
+              if vim.fn.has("macunix") == 1 then
+                return "/opt/homebrew/bin/python3"
+              else
+                return "/usr/bin/python3"
+              end
             end,
             -- pytest discovery
             pytest_discover_instances = true,

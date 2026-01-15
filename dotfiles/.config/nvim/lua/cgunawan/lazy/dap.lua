@@ -92,7 +92,22 @@ return {
 
       -- Python DAP configuration
       require("dap-python").setup("debugpy")
-      
+
+      -- Helper function to get Python path (cross-platform)
+      local function get_python_path()
+        -- Try virtual environment first
+        local venv_path = os.getenv("VIRTUAL_ENV")
+        if venv_path then
+          return venv_path .. "/bin/python"
+        end
+        -- Platform-specific fallback
+        if vim.fn.has("macunix") == 1 then
+          return "/opt/homebrew/bin/python3"
+        else
+          return "/usr/bin/python3"
+        end
+      end
+
       -- Python debugging configurations
       table.insert(dap.configurations.python, {
         type = "python",
@@ -105,15 +120,7 @@ return {
         end,
         console = "integratedTerminal",
         cwd = "${workspaceFolder}",
-        pythonPath = function()
-          -- Try to detect virtual environment
-          local venv_path = os.getenv("VIRTUAL_ENV")
-          if venv_path then
-            return venv_path .. "/bin/python"
-          end
-          -- Fallback to system python
-          return "/usr/bin/python3"
-        end,
+        pythonPath = get_python_path,
       })
 
       -- Django debugging configuration
@@ -126,13 +133,7 @@ return {
         console = "integratedTerminal",
         django = true,
         cwd = "${workspaceFolder}",
-        pythonPath = function()
-          local venv_path = os.getenv("VIRTUAL_ENV")
-          if venv_path then
-            return venv_path .. "/bin/python"
-          end
-          return "/usr/bin/python3"
-        end,
+        pythonPath = get_python_path,
       })
 
       -- Flask debugging configuration
@@ -148,13 +149,7 @@ return {
         args = { "run", "--no-debugger", "--no-reload" },
         console = "integratedTerminal",
         cwd = "${workspaceFolder}",
-        pythonPath = function()
-          local venv_path = os.getenv("VIRTUAL_ENV")
-          if venv_path then
-            return venv_path .. "/bin/python"
-          end
-          return "/usr/bin/python3"
-        end,
+        pythonPath = get_python_path,
       })
     end,
   },

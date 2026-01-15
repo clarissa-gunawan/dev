@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../../runs/_platform.sh"
+
+echo "Install Cursor"
+
+ensure_brew
+
+if [[ -d "/Applications/Cursor.app" ]]; then
+    echo "Cursor is already installed. Upgrading..."
+    brew upgrade --cask cursor || echo "Cursor is already up to date"
+else
+    brew install --cask cursor
+fi

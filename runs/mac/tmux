@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../_platform.sh"
+
+ensure_brew
+
+if command -v tmux &> /dev/null; then
+    echo "tmux is already installed. Upgrading..."
+    brew upgrade tmux || echo "tmux is already up to date"
+else
+    brew install tmux
+fi
+
+# Install TPM if not present
+TPM_DIR="$HOME/.tmux/plugins/tpm"
+if [[ ! -d "$TPM_DIR" ]]; then
+    git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
+fi
+
+echo "Run 'prefix + I' in tmux to install plugins"

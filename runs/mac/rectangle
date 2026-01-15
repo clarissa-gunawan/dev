@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../_platform.sh"
+
+echo "Install Rectangle (window tiling manager)"
+
+ensure_brew
+
+if [[ -d "/Applications/Rectangle.app" ]]; then
+    echo "Rectangle is already installed. Upgrading..."
+    brew upgrade --cask rectangle || echo "Rectangle is already up to date"
+else
+    brew install --cask rectangle
+fi

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../_platform.sh"
+
+echo "Install lazygit: a tui for git"
+
+ensure_brew
+
+if command -v lazygit &> /dev/null; then
+    echo "lazygit is already installed. Upgrading..."
+    brew upgrade lazygit || echo "lazygit is already up to date"
+else
+    brew install lazygit
+fi
