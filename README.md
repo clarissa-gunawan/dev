@@ -45,7 +45,6 @@ Scripts are organized into core and optional categories with platform-specific i
 - **rofi** - Application launcher and window switcher with custom themes
 - **tmux** - Terminal multiplexer for managing multiple sessions
 - **tools** - CLI utilities (fzf fuzzy finder, bat cat clone with syntax highlighting, task runner, zoxide smart cd, fd find replacement)
-- **browser-brave** - Privacy-focused web browser
 
 #### macOS (`runs/mac/`)
 
@@ -57,7 +56,6 @@ Scripts are organized into core and optional categories with platform-specific i
 - **raycast** - Productivity launcher and window switcher (replaces rofi)
 - **tmux** - Terminal multiplexer for managing multiple sessions with clipboard integration
 - **tools** - CLI utilities (fzf fuzzy finder, bat cat clone with syntax highlighting, task runner, zoxide smart cd, fd find replacement)
-- **browser-brave** - Privacy-focused web browser
 - **python** - Python and pyenv for version management
 
 ### Optional Scripts
@@ -65,7 +63,6 @@ Scripts are organized into core and optional categories with platform-specific i
 #### Linux (`runs_optional/linux/`)
 
 - **blender** - 3D creation suite
-- **browser-zen** - Firefox-based browser with privacy focus
 - **cuda** - NVIDIA CUDA toolkit for GPU computing
 - **cursor** - AI-powered code editor
 - **git-lfs** - Git Large File Storage for handling large files
