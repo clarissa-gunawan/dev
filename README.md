@@ -2,6 +2,8 @@
 
 My ultimate lightweight setup for installing development tools and configurations without manual searching. This repository provides automated scripts to install essential development tools with personalized configurations using Iceberg Dark and Nord themes with DejaVu Sans Mono font. Everything installs in under 20 minutes, including dependencies.
 
+**Cross-platform support:** Linux and macOS with platform-specific optimizations and tooling.
+
 ## Quick Start
 
 Run the main installation:
@@ -21,15 +23,18 @@ Apply your dotfiles configuration:
 Preview changes without making modifications:
 
 ```bash
-./run --dry
-./dev-env --dry
+./run --dry          # Shows which scripts would run for your platform
+./dev-env --dry      # Shows which configs would be copied
+./dev-env --dry nvim # Preview nvim-specific config changes
 ```
 
 ## Run Installation Scripts
 
-Scripts are organized into core and optional categories with brief explanations of each tool.
+Scripts are organized into core and optional categories with platform-specific implementations. The system automatically detects your OS and runs the appropriate scripts.
 
-### Core Scripts (`runs/`)
+### Core Scripts
+
+#### Linux (`runs/linux/`)
 
 - **docker** - Container runtime with lazydocker TUI for easy management
 - **flameshot** - Screenshot tool with i3 integration
@@ -40,10 +45,27 @@ Scripts are organized into core and optional categories with brief explanations 
 - **rofi** - Application launcher and window switcher with custom themes
 - **tmux** - Terminal multiplexer for managing multiple sessions
 - **tools** - CLI utilities (fzf fuzzy finder, bat cat clone with syntax highlighting, task runner, zoxide smart cd, fd find replacement)
-- **zen-browser** - Firefox-based browser
+- **browser-brave** - Privacy-focused web browser
 
-### Optional Scripts (`runs_optional/`)
+#### macOS (`runs/mac/`)
 
+- **docker** - OrbStack (Docker alternative for macOS) with GPU acceleration support
+- **ghostty** - Modern terminal emulator with native macOS titlebar style
+- **lazygit** - TUI for Git operations
+- **neovim** - Modern Vim fork with LSP support, treesitter syntax highlighting, and plugins for efficient coding
+- **rectangle** - Window tiling manager (replaces i3 functionality)
+- **raycast** - Productivity launcher and window switcher (replaces rofi)
+- **tmux** - Terminal multiplexer for managing multiple sessions with clipboard integration
+- **tools** - CLI utilities (fzf fuzzy finder, bat cat clone with syntax highlighting, task runner, zoxide smart cd, fd find replacement)
+- **browser-brave** - Privacy-focused web browser
+- **python** - Python and pyenv for version management
+
+### Optional Scripts
+
+#### Linux (`runs_optional/linux/`)
+
+- **blender** - 3D creation suite
+- **browser-zen** - Firefox-based browser with privacy focus
 - **cuda** - NVIDIA CUDA toolkit for GPU computing
 - **cursor** - AI-powered code editor
 - **git-lfs** - Git Large File Storage for handling large files
@@ -55,13 +77,25 @@ Scripts are organized into core and optional categories with brief explanations 
 - **open-ai-codex** - OpenAI Codex CLI for code completion
 - **opencode** - AI coding assistant
 
-Run all core scripts:
+#### macOS (`runs_optional/mac/`)
+
+- **blender** - 3D creation suite
+- **cursor** - AI-powered code editor
+- **git-lfs** - Git Large File Storage for handling large files
+- **lmstudio** - Local LLM interface for running language models
+- **mujoco** - Physics simulation engine
+- **ollama** - Local LLM runner
+- **opencode** - AI coding assistant
+
+The installation script automatically detects your platform (Linux/macOS) and runs the appropriate scripts.
+
+Run all core scripts for your platform:
 
 ```bash
 ./run
 ```
 
-Run all optional scripts:
+Run all optional scripts for your platform:
 
 ```bash
 ./run --optional
@@ -70,8 +104,12 @@ Run all optional scripts:
 Run specific script:
 
 ```bash
-./run neovim
+./run neovim          # Runs neovim for your detected platform
+./run raycast         # macOS only - will be skipped on Linux
+./run i3              # Linux only - will be skipped on macOS
 ```
+
+**Platform Detection:** The system shows which platform is detected and only runs scripts available for that platform. macOS-specific tools (Rectangle, Raycast) are only available on macOS, while Linux-specific tools (i3, rofi, flameshot) are only available on Linux.
 
 ## Workflow Scripts (`dotfiles/.local/scripts/`)
 
@@ -141,7 +179,28 @@ container-flow setup --dry         # Preview setup without execution
 
 ## Configuration (dotfiles/)
 
-The `./dev-env` script copies dotfiles to your home directory, replacing existing configurations.
+The `./dev-env` script copies dotfiles to your home directory with cross-platform support, replacing existing configurations.
+
+### Cross-Platform Configuration
+
+The system automatically detects your platform and applies appropriate configurations:
+
+- **Shared configs:** Applied to all platforms (tmux, ghostty, nvim, lazygit, bat, yazi, opencode)
+- **Linux-only configs:** i3, i3blocks, rofi, picom (window management on Linux)
+- **macOS-specific:** Shell integration with .zshrc, platform-specific paths
+
+### Shell Configuration (.dotfiles.sh)
+
+A new shared shell configuration system provides consistent experience across platforms:
+
+- **Cross-platform aliases:** vim→nvim, ll/la/l ls shortcuts
+- **Smart tool detection:** bat/batcat handling, fzf integration for both bash/zsh
+- **Consistent PATH:** Local scripts, opencode, lmstudio binaries
+- **SSH agent:** Persistent across sessions
+- **Zoxide integration:** Smart directory navigation
+- **Yazi wrapper:** File manager with automatic directory changes
+
+**macOS Integration:** Automatically sources `.dotfiles.sh` from `.zshrc` if not already present.
 
 ### ⚠️ Warning
 
@@ -152,6 +211,7 @@ The `./dev-env` script copies dotfiles to your home directory, replacing existin
 - Edit files in `dotfiles/` to personalize
 - Run `./dev-env` again to apply changes
 - Use `--dry` to preview what will be changed
+- Filter specific configs: `./dev-env nvim` (only applies nvim config)
 
 ## 🌟 Interesting Tools
 
