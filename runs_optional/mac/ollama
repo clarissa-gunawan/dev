@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../../runs/_platform.sh"
+
+echo "Install Ollama"
+
+ensure_brew
+
+if command -v ollama &> /dev/null; then
+    echo "Ollama is already installed. Upgrading..."
+    brew upgrade ollama || echo "Ollama is already up to date"
+else
+    brew install ollama
+fi
+
+echo "Run 'ollama serve' to start the server"

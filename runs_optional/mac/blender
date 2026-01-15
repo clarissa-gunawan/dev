@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../../runs/_platform.sh"
+
+echo "Install Blender"
+
+ensure_brew
+
+if [[ -d "/Applications/Blender.app" ]]; then
+    echo "Blender is already installed. Upgrading..."
+    brew upgrade --cask blender || echo "Blender is already up to date"
+else
+    brew install --cask blender
+fi

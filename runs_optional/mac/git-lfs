@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../../runs/_platform.sh"
+
+echo "Install Git LFS"
+
+ensure_brew
+
+brew install git-lfs
+git lfs install

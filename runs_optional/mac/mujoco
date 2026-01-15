@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../../runs/_platform.sh"
+
+echo "Install MuJoCo"
+
+ensure_brew
+
+# MuJoCo is typically installed via pip
+if command -v pip3 &> /dev/null; then
+    pip3 install mujoco
+else
+    echo "pip3 not found. Install Python first."
+    exit 1
+fi
