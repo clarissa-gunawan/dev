@@ -156,11 +156,19 @@ if [[ -d "$LOCAL_SCRIPTS_SRC" ]]; then
   fi
 fi
 
-# Copy .bashrc
+# Copy shell config
+DOTFILES_SH_SRC="$script_dir/dotfiles/.dotfiles.sh"
 BASHRC_SRC="$script_dir/dotfiles/.bashrc"
 
-if [[ -f "$BASHRC_SRC" ]]; then
-  if [[ -z "$filter" || "bashrc" == *"$filter"* ]]; then
+if [[ -z "$filter" || "shell" == *"$filter"* || "bashrc" == *"$filter"* || "zshrc" == *"$filter"* ]]; then
+  # Always copy .dotfiles.sh (works with both bash and zsh)
+  if [[ -f "$DOTFILES_SH_SRC" ]]; then
+    execute cp "$DOTFILES_SH_SRC" "$HOME/.dotfiles.sh"
+    log_success "Copied .dotfiles.sh"
+  fi
+
+  # On Linux, also copy .bashrc
+  if [[ "$OS" == "linux" && -f "$BASHRC_SRC" ]]; then
     execute cp "$BASHRC_SRC" "$HOME/.bashrc"
     log_success "Copied .bashrc"
   fi
@@ -168,3 +176,32 @@ fi
 
 echo ""
 echo -e "${GREEN}${BOLD}Done!${RESET}"
+
+# On Mac, ensure .zshrc sources .dotfiles.sh
+if [[ "$OS" == "mac" ]]; then
+  ZSHRC="$HOME/.zshrc"
+  SOURCE_LINE='source ~/.dotfiles.sh'
+
+  if [[ -f "$ZSHRC" ]]; then
+    if grep -q "source ~/.dotfiles.sh" "$ZSHRC" 2>/dev/null; then
+      echo -e "${GREEN}✓${RESET} .zshrc already sources .dotfiles.sh"
+    else
+      if [[ $dry == "1" ]]; then
+        echo -e "${YELLOW}[DRY]${RESET} Would append 'source ~/.dotfiles.sh' to .zshrc"
+      else
+        echo "" >> "$ZSHRC"
+        echo "# Dotfiles configuration" >> "$ZSHRC"
+        echo "$SOURCE_LINE" >> "$ZSHRC"
+        echo -e "${GREEN}✓${RESET} Added 'source ~/.dotfiles.sh' to .zshrc"
+      fi
+    fi
+  else
+    if [[ $dry == "1" ]]; then
+      echo -e "${YELLOW}[DRY]${RESET} Would create .zshrc with 'source ~/.dotfiles.sh'"
+    else
+      echo "# Dotfiles configuration" > "$ZSHRC"
+      echo "$SOURCE_LINE" >> "$ZSHRC"
+      echo -e "${GREEN}✓${RESET} Created .zshrc with 'source ~/.dotfiles.sh'"
+    fi
+  fi
+fi
