@@ -19,7 +19,8 @@ brew install \
     wget \
     curl \
     tree \
-    htop
+    htop \
+    yazi
 
 # Install Oh My Posh
 echo "Installing Oh My Posh..."

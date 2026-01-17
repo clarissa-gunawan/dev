@@ -80,9 +80,12 @@ export LG_CONFIG_FILE="$HOME/.config/lazygit/config.yml"
 # Aliases
 # =============================================================================
 alias vim="nvim"
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
+
+# eza aliases (modern ls replacement)
+alias ls='eza'
+alias ll='eza -al'
+alias la='eza -a'
+alias l='eza'
 
 # bat/batcat alias (Linux uses batcat, Mac uses bat)
 if command -v batcat &> /dev/null; then
