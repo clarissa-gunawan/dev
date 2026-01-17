@@ -73,6 +73,9 @@ export PATH="$PATH:$HOME/.lmstudio/bin"
 export TERMINAL=ghostty
 export EDITOR=nvim
 
+# Point lazygit to ~/.config on macOS (it defaults to ~/Library/Application Support/)
+export LG_CONFIG_FILE="$HOME/.config/lazygit/config.yml"
+
 # =============================================================================
 # Aliases
 # =============================================================================

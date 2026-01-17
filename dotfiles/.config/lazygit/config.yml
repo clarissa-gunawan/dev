@@ -3,15 +3,15 @@ gui:
   nerdFontsVersion: '3'
   border: rounded
   theme:
-    activeBorderColor: ['#88c0d0', bold]
-    inactiveBorderColor: ['#4c566a']
-    optionsTextColor: ['#88c0d0']
-    selectedLineBgColor: ['#3b4252']
-    selectedRangeBgColor: ['#3b4252']
-    cherryPickedCommitBgColor: ['#3b4252']
-    cherryPickedCommitFgColor: ['#88c0d0']
-    unstagedChangesColor: ['#bf616a']
-    defaultFgColor: ['#d8dee9']
-    defaultBgColor: ['#2e3440']
+    activeBorderColor: ['#8aadf4', bold]
+    inactiveBorderColor: ['#494d64']
+    optionsTextColor: ['#8aadf4']
+    selectedLineBgColor: ['#363a4f']
+    selectedRangeBgColor: ['#363a4f']
+    cherryPickedCommitBgColor: ['#363a4f']
+    cherryPickedCommitFgColor: ['#c6a0f6']
+    unstagedChangesColor: ['#ed8796']
+    defaultFgColor: ['#cad3f5']
+    defaultBgColor: ['#24273a']
   authorColors:
     Clarissa Gunawan: '#ebcb8b'
