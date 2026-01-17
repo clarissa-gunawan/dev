@@ -6,6 +6,51 @@ echo "Install neovim"
 
 ensure_brew
 
+# Install git
+if command -v git &> /dev/null; then
+    echo "git is already installed. Upgrading..."
+    brew upgrade git || echo "git is already up to date"
+else
+    echo "Installing git..."
+    brew install git
+fi
+
+# Install cmake
+if command -v cmake &> /dev/null; then
+    echo "cmake is already installed. Upgrading..."
+    brew upgrade cmake || echo "cmake is already up to date"
+else
+    echo "Installing cmake..."
+    brew install cmake
+fi
+
+# Install python3 (includes venv module)
+if command -v python3 &> /dev/null; then
+    echo "python3 is already installed. Upgrading..."
+    brew upgrade python || echo "python is already up to date"
+else
+    echo "Installing python3..."
+    brew install python
+fi
+
+# Install node (includes npm)
+if command -v npm &> /dev/null; then
+    echo "npm is already installed. Upgrading..."
+    brew upgrade node || echo "node is already up to date"
+else
+    echo "Installing node (includes npm)..."
+    brew install node
+fi
+
+# Install go
+if command -v go &> /dev/null; then
+    echo "go is already installed. Upgrading..."
+    brew upgrade go || echo "go is already up to date"
+else
+    echo "Installing go..."
+    brew install go
+fi
+
 if command -v nvim &> /dev/null; then
     echo "neovim is already installed. Upgrading..."
     brew upgrade neovim || echo "neovim is already up to date"
