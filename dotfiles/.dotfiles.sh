@@ -6,6 +6,60 @@
 CURRENT_SHELL=$(basename "$SHELL")
 
 # =============================================================================
+# Oh My Posh Configuration (works with bash and zsh)
+# =============================================================================
+if command -v oh-my-posh &> /dev/null; then
+    # Get the themes directory
+    if command -v brew &> /dev/null; then
+        POSH_THEMES_PATH="$(brew --prefix oh-my-posh)/themes"
+    else
+        POSH_THEMES_PATH="$HOME/.cache/oh-my-posh/themes"
+    fi
+
+    # Available themes - change POSH_THEME to switch
+    # Options: catppuccin, powerlevel10k, robbyrussell, zash
+    POSH_THEME="${POSH_THEME:-catppuccin}"
+
+    case "$POSH_THEME" in
+        catppuccin)
+            POSH_THEME_FILE="$POSH_THEMES_PATH/catppuccin_macchiato.omp.json"
+            ;;
+        powerlevel10k)
+            POSH_THEME_FILE="$POSH_THEMES_PATH/powerlevel10k_lean.omp.json"
+            ;;
+        robbyrussell)
+            POSH_THEME_FILE="$POSH_THEMES_PATH/robbyrussell.omp.json"
+            ;;
+        zash)
+            POSH_THEME_FILE="$POSH_THEMES_PATH/zash.omp.json"
+            ;;
+        *)
+            POSH_THEME_FILE="$POSH_THEMES_PATH/$POSH_THEME.omp.json"
+            ;;
+    esac
+
+    # Initialize Oh My Posh
+    if [[ "$CURRENT_SHELL" == "zsh" ]]; then
+        eval "$(oh-my-posh init zsh --config "$POSH_THEME_FILE")"
+    elif [[ "$CURRENT_SHELL" == "bash" ]]; then
+        eval "$(oh-my-posh init bash --config "$POSH_THEME_FILE")"
+    fi
+
+    # Function to switch themes on the fly
+    posh-theme() {
+        if [[ -z "$1" ]]; then
+            echo "Current theme: $POSH_THEME"
+            echo "Available: catppuccin, powerlevel10k, robbyrussell, zash"
+            echo "Usage: posh-theme <theme-name>"
+            return
+        fi
+        export POSH_THEME="$1"
+        source ~/.dotfiles.sh
+        echo "Switched to: $1"
+    }
+fi
+
+# =============================================================================
 # PATH Configuration
 # =============================================================================
 export PATH="$HOME/.local/bin:$PATH"
