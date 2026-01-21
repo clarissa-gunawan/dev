@@ -10,7 +10,7 @@ else
         # -d 2: max depth of 2 levels
         # -H: include hidden files/directories (remove this if you want to exclude all hidden)
         # . $HOME/: search in home directory
-        selected=$(fd -t d -d 2 . "$HOME/" | fzf)
+        selected=$(fd -t d -H -d 2 . "$HOME/" | fzf)
     else
         # Fallback to find with dotfolder exclusion
         # -maxdepth 2 -mindepth 1: search 1-2 levels deep
