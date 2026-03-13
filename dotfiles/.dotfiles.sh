@@ -58,10 +58,10 @@ fi
 # FZF Configuration
 # =============================================================================
 export FZF_DEFAULT_OPTS=" \
-    --color=fg:#D6DAE8,bg:#161821,hl:#88c0d0 \
-    --color=fg+:#E8ECF4,bg+:#1E2132,hl+:#88c0d0 \
-    --color=info:#9CCEF2,prompt:#BBA8E8,pointer:#EBCB8B \
-    --color=marker:#C8E6A0,spinner:#9CCEF2,header:#8B95B8"
+    --color=fg:#c0caf5,bg:#1a1b26,hl:#ff9e64 \
+    --color=fg+:#c0caf5,bg+:#292e42,hl+:#ff9e64 \
+    --color=info:#7aa2f7,prompt:#7dcfff,pointer:#7aa2f7 \
+    --color=marker:#9ece6a,spinner:#9ece6a,header:#9ece6a"
 
 if command -v fd &> /dev/null; then
     export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --exclude .git'
