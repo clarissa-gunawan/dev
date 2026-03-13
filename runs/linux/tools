@@ -36,10 +36,10 @@ sudo apt install -y bash-completion
 echo "Install fd"
 sudo apt install -y fd-find
 if [ ! -e "$HOME/.local/bin/fd" ]; then
-    ln -s /path/to/fd "$HOME/.local/bin/fd"
-    ln -s $(which fdfind) "$HOME/.local/bin/fd"
+    mkdir -p "$HOME/.local/bin"
+    ln -sf $(which fdfind) "$HOME/.local/bin/fd"
 else
-    echo "Link already exists, skipping."
+    echo "fd symlink already exists, skipping."
 fi
 
 
