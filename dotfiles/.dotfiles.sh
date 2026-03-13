@@ -46,12 +46,9 @@ alias ll='eza -al'
 alias la='eza -a'
 alias l='eza'
 
-# bat/batcat alias (Linux uses batcat, Mac uses bat)
+# bat/batcat alias (Linux package is named batcat)
 if command -v batcat &> /dev/null; then
     alias bat="batcat"
-    alias cat="batcat"
-elif command -v bat &> /dev/null; then
-    alias cat="bat"
 fi
 
 # =============================================================================
