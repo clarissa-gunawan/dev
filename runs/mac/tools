@@ -22,6 +22,6 @@ brew install \
     htop \
     yazi
 
-# Install Oh My Posh
-echo "Installing Oh My Posh..."
-brew install jandedobbeleer/oh-my-posh/oh-my-posh
+# Install Starship prompt
+echo "Installing Starship..."
+brew install starship
