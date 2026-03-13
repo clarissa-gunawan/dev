@@ -87,12 +87,6 @@ fi
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# eza aliases (modern ls replacement)
-alias ls='eza'
-alias ll='eza -al'
-alias la='eza -a'
-alias l='eza'
-
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -120,84 +114,8 @@ fi
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
-
-export PATH="$HOME/.local/bin:$PATH"
-
-export TERMINAL=ghostty
-export PS1="\[\e[1;32m\]\u\[\e[0m\]@\[\e[1;34m\]\h\[\e[0m\]:\w\$ "
-
-alias bat="batcat"
-alias cat="batcat"
-
-[ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.bash
-eval "$(fzf --bash)"
-alias fzf="fzf --preview='batcat {}'"
-export FZF_DEFAULT_OPTS=" \
-    --color=fg:#D6DAE8,bg:#161821,hl:#88c0d0 \
-    --color=fg+:#E8ECF4,bg+:#1E2132,hl+:#88c0d0 \
-    --color=info:#9CCEF2,prompt:#BBA8E8,pointer:#EBCB8B \
-    --color=marker:#C8E6A0,spinner:#9CCEF2,header:#8B95B8"
-export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --exclude .git'
-
-export PATH="$PATH":"$HOME/.local/scripts/"
-export PATH="$PATH:$HOME/go/bin"
-bind '"\C-f":"tmux-sessionizer\n"'
-
-alias vim="nvim"
+# Shared shell configuration (aliases, PATH, tools, etc.)
+source "$HOME/.dotfiles.sh"
 
 # Allow for task.dev to autocomplete
 eval "$(task --completion bash)"
-
-# Persistent SSH Agent Setup
-# This script ensures a single SSH agent persists across all shell sessions
-# by creating a fixed socket location and reusing the same agent process
-
-# Check if our persistent SSH agent socket exists and is actually a socket file
-# -S tests specifically for socket files (not regular files or directories)
-if [ ! -S ~/.ssh/ssh_auth_sock ]; then
-    # No persistent agent found, so start a new SSH agent
-    # ssh-agent outputs environment variables (SSH_AUTH_SOCK and SSH_AGENT_PID)
-    # eval executes these assignments in the current shell
-    eval `ssh-agent`
-    
-    # Create a symbolic link from the temporary agent socket to our fixed location
-    # This allows us to always connect to the same agent across sessions
-    # -s: create symbolic link
-    # -f: force overwrite if the link already exists
-    ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
-fi
-
-# Always point SSH_AUTH_SOCK to our persistent socket location
-# This ensures all shells use the same agent, whether we just started it
-# or it was already running from a previous session
-export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
-
-# Automatically load SSH keys if none are currently loaded
-# ssh-add -l lists currently loaded keys
-# > /dev/null discards the output (we only care about success/failure)
-# || means "if the previous command failed, run this command"
-# ssh-add with no arguments loads default keys (~/.ssh/id_rsa, ~/.ssh/id_dsa, etc.)
-ssh-add -l > /dev/null || ssh-add
-
-# Zoxide to initialize
-eval "$(zoxide init bash)"
-
-# Bash Completion, if available
-[[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
-    . /usr/share/bash-completion/bash_completion
-
-# Open Code Config
-export EDITOR=vim
-export PATH="$HOME/.opencode/bin:$PATH"
-
-# LM Studio CLI tool (lms)
-export PATH="$PATH:$HOME/.lmstudio/bin"
-
-# Yazi shell wrapper
-function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
-	IFS= read -r -d '' cwd < "$tmp"
-	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
-	rm -f -- "$tmp"
-}
