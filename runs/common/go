@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../_platform.sh"
+
+OS=$(detect_os)
+
+echo "Install Go (Webi)"
+
+if ! command -v curl &> /dev/null; then
+    echo "curl not found. Installing curl..."
+    if [[ "$OS" == "linux" ]]; then
+        sudo apt update && sudo apt install -y curl
+    elif [[ "$OS" == "mac" ]]; then
+        ensure_brew
+        brew install curl
+    else
+        echo "Unsupported OS: $OS"
+        exit 1
+    fi
+fi
+
+if command -v go &> /dev/null; then
+    echo "go is already installed: $(go version)"
+else
+    echo "Installing Go via Webi..."
+    curl -sS https://webi.sh/golang | sh
+fi
+
+if command -v go &> /dev/null; then
+    echo "Go installed successfully: $(go version)"
+else
+    echo "Go install completed, but 'go' is not in PATH yet."
+    echo "Open a new shell or source your shell config to pick up PATH changes."
+fi

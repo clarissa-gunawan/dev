@@ -38,6 +38,7 @@ Scripts are organized into core and optional categories with platform-specific i
 
 - **docker** - Container runtime with lazydocker TUI for easy management
 - **flameshot** - Screenshot tool with i3 integration
+- **go** - Go language toolchain installed via Webi
 - **ghostty** - Modern terminal emulator with GPU acceleration
 - **i3** - Tiling window manager with custom keybindings, Iceberg Dark theme, and status bar
 - **lazygit** - TUI for Git operations
@@ -49,6 +50,7 @@ Scripts are organized into core and optional categories with platform-specific i
 #### macOS (`runs/mac/`)
 
 - **docker** - OrbStack (Docker alternative for macOS) with GPU acceleration support
+- **go** - Go language toolchain installed via Webi
 - **ghostty** - Modern terminal emulator with native macOS titlebar style
 - **lazygit** - TUI for Git operations
 - **neovim** - Modern Vim fork with LSP support, treesitter syntax highlighting, and plugins for efficient coding
@@ -102,6 +104,7 @@ Run specific script:
 
 ```bash
 ./run neovim          # Runs neovim for your detected platform
+./run go              # Runs Go installer for your detected platform
 ./run raycast         # macOS only - will be skipped on Linux
 ./run i3              # Linux only - will be skipped on macOS
 ```

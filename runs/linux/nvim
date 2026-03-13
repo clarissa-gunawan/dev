@@ -23,10 +23,6 @@ command -v npm || {
   echo "Installing nodejs and npm..."
   sudo apt update && sudo apt install -y nodejs npm
 }
-command -v go || {
-  echo "Installing Go..."
-  sudo apt update && sudo apt install -y golang-go
-}
 command -v devcontainer || {
   echo "Installing devcontainer..."
   sudo npm install -g @devcontainers/cli

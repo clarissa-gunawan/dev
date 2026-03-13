@@ -140,6 +140,7 @@ export FZF_DEFAULT_OPTS=" \
 export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --exclude .git'
 
 export PATH="$PATH":"$HOME/.local/scripts/"
+export PATH="$PATH:$HOME/go/bin"
 bind '"\C-f":"tmux-sessionizer\n"'
 
 alias vim="nvim"
