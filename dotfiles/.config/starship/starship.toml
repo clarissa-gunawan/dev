@@ -1,0 +1,18 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+[username]
+show_always = false
+format = '[$user@]($style)'
+
+[hostname]
+ssh_only = true
+format = '[$hostname]($style) '
+
+[gcloud]
+format = 'on [$symbol]($style)'
+
+[aws]
+format = 'on [$symbol]($style)'
+
+[azure]
+format = 'on [$symbol]($style)'

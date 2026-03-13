@@ -9,6 +9,7 @@ CURRENT_SHELL=$(basename "$SHELL")
 # Starship Prompt (works with bash and zsh)
 # =============================================================================
 if command -v starship &> /dev/null; then
+    export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
     if [[ "$CURRENT_SHELL" == "zsh" ]]; then
         eval "$(starship init zsh)"
     elif [[ "$CURRENT_SHELL" == "bash" ]]; then

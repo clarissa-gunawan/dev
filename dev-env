@@ -100,6 +100,7 @@ SHARED_CONFIGS=(
   "bat"
   "yazi"
   "opencode"
+  "starship"
 )
 
 # Linux-only configs
