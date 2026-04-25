@@ -16,3 +16,6 @@ format = 'on [$symbol]($style)'
 
 [azure]
 format = 'on [$symbol]($style)'
+
+[git_branch]
+symbol = "⎇ "
