@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e
+
+echo "Install starship"
+curl -sS https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin"

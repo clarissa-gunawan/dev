@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+
+echo "Install yazi"
+mkdir -p "$HOME/.local/bin"
+wget -qO /tmp/yazi.zip https://github.com/sxyazi/yazi/releases/latest/download/yazi-x86_64-unknown-linux-musl.zip
+unzip -qo /tmp/yazi.zip -d /tmp/yazi-temp
+mv /tmp/yazi-temp/*/yazi "$HOME/.local/bin/"
+rm -rf /tmp/yazi.zip /tmp/yazi-temp
