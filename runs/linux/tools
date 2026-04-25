@@ -6,29 +6,31 @@ echo "Install fzf"
 fzf_dir=$HOME/code/fzf
 
 # Check for required tools
-command -v git || { echo "Installing git..."; sudo apt update && sudo apt install -y git; }
-command -v curl || { echo "Installing curl..."; sudo apt update && sudo apt install -y curl; }
+command -v git || {
+  echo "Installing git..."
+  sudo apt update && sudo apt install -y git
+}
+command -v curl || {
+  echo "Installing curl..."
+  sudo apt update && sudo apt install -y curl
+}
 
 if [ ! -d "$fzf_dir" ]; then
-    git clone --depth 1 https://github.com/junegunn/fzf.git $fzf_dir
+  git clone --depth 1 https://github.com/junegunn/fzf.git $fzf_dir
 fi
 $fzf_dir/install --xdg --key-bindings --completion --update-rc
-
 
 echo "Install bat"
 # https://github.com/sharkdp/bat
 sudo apt install -y bat
 
-
 echo "Install task"
 # https://taskfile.dev/
 sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b ~/.local/bin
 
-
 echo "Install zoxide"
 # https://github.com/ajeetdsouza/zoxide
 curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
-
 
 echo "Install bash-completion"
 sudo apt install -y bash-completion
@@ -41,17 +43,16 @@ curl -fL "https://github.com/eza-community/eza/releases/download/v${EZA_VERSION}
 
 echo "Install starship"
 # https://starship.rs/
-curl -sS https://starship.rs/install.sh | sh
+curl -sS https://starship.rs/install.sh | sh -s -- -y
 
 echo "Install fd"
 sudo apt install -y fd-find
 if [ ! -e "$HOME/.local/bin/fd" ]; then
-    mkdir -p "$HOME/.local/bin"
-    ln -sf $(which fdfind) "$HOME/.local/bin/fd"
+  mkdir -p "$HOME/.local/bin"
+  ln -sf $(which fdfind) "$HOME/.local/bin/fd"
 else
-    echo "fd symlink already exists, skipping."
+  echo "fd symlink already exists, skipping."
 fi
-
 
 echo "Install yazi dependencies"
 # https://yazi-rs.github.io/docs/installation/
@@ -59,13 +60,16 @@ sudo apt install -y ffmpeg 7zip jq poppler-utils ripgrep imagemagick xclip file
 
 echo "Install yazi binary"
 # Check for unzip
-command -v unzip || { echo "Installing unzip..."; sudo apt update && sudo apt install -y unzip; }
+command -v unzip || {
+  echo "Installing unzip..."
+  sudo apt update && sudo apt install -y unzip
+}
 
 DOWNLOAD_FOLDER=/tmp
 INSTALL_FOLDER=~/.local/bin
 YAZI_VERSION=$(curl -sL "https://api.github.com/repos/sxyazi/yazi/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 curl -fL -o "$DOWNLOAD_FOLDER/yazi-x86_64-unknown-linux-gnu.zip" \
   "https://github.com/sxyazi/yazi/releases/download/$YAZI_VERSION/yazi-x86_64-unknown-linux-gnu.zip"
-unzip "$DOWNLOAD_FOLDER/yazi-x86_64-unknown-linux-gnu.zip" -d "$DOWNLOAD_FOLDER"
+unzip -o "$DOWNLOAD_FOLDER/yazi-x86_64-unknown-linux-gnu.zip" -d "$DOWNLOAD_FOLDER"
 cp "$DOWNLOAD_FOLDER/yazi-x86_64-unknown-linux-gnu/yazi" "$INSTALL_FOLDER"
 cp "$DOWNLOAD_FOLDER/yazi-x86_64-unknown-linux-gnu/ya" "$INSTALL_FOLDER"
