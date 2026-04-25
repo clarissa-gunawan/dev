@@ -45,7 +45,7 @@ Scripts are organized into core and optional categories with platform-specific i
 - **neovim** - Modern Vim fork with LSP support, treesitter syntax highlighting, and plugins for efficient coding
 - **rofi** - Application launcher and window switcher with custom themes
 - **tmux** - Terminal multiplexer for managing multiple sessions
-- **tools** - CLI utilities (fzf fuzzy finder, bat cat clone with syntax highlighting, task runner, zoxide smart cd, fd find replacement)
+- **tools** - CLI utilities (eza modern ls, fzf fuzzy finder, bat cat clone with syntax highlighting, task runner, zoxide smart cd, fd find replacement, starship prompt)
 
 #### macOS (`runs/mac/`)
 
@@ -57,7 +57,7 @@ Scripts are organized into core and optional categories with platform-specific i
 - **rectangle** - Window tiling manager (replaces i3 functionality)
 - **raycast** - Productivity launcher and window switcher (replaces rofi)
 - **tmux** - Terminal multiplexer for managing multiple sessions with clipboard integration
-- **tools** - CLI utilities (fzf fuzzy finder, bat cat clone with syntax highlighting, task runner, zoxide smart cd, fd find replacement)
+- **tools** - CLI utilities (eza modern ls, fzf fuzzy finder, bat cat clone with syntax highlighting, task runner, zoxide smart cd, fd find replacement, starship prompt)
 - **python** - Python and pyenv for version management
 
 ### Optional Scripts
@@ -84,6 +84,7 @@ Scripts are organized into core and optional categories with platform-specific i
 - **lmstudio** - Local LLM interface for running language models
 - **mujoco** - Physics simulation engine
 - **ollama** - Local LLM runner
+- **open-ai-codex** - OpenAI Codex CLI for code completion
 - **opencode** - AI coding assistant
 
 The installation script automatically detects your platform (Linux/macOS) and runs the appropriate scripts.

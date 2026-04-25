@@ -33,6 +33,15 @@ curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh 
 echo "Install bash-completion"
 sudo apt install -y bash-completion
 
+echo "Install eza"
+# https://github.com/eza-community/eza
+mkdir -p "$HOME/.local/bin"
+curl -sfL https://api.github.com/repos/eza-community/eza/releases/latest/download/eza-x86_64-unknown-linux-gnu.tar.gz | tar xz -C "$HOME/.local/bin"
+
+echo "Install starship"
+# https://starship.rs/
+curl -sS https://starship.rs/install.sh | sh
+
 echo "Install fd"
 sudo apt install -y fd-find
 if [ ! -e "$HOME/.local/bin/fd" ]; then

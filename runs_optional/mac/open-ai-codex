@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -e
+source "$(dirname "$0")/../../runs/_platform.sh"
+
+echo "Install OpenAI's Codex"
+
+ensure_brew
+
+if command -v codex &> /dev/null; then
+    echo "codex is already installed. Upgrading..."
+    npm upgrade -g @openai/codex || echo "codex is already up to date"
+else
+    echo "Installing OpenAI Codex..."
+    npm install -g @openai/codex
+fi
