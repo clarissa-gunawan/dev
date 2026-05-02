@@ -10,6 +10,7 @@ theme = TokyoNight Night
 # font-family = "Ubuntu Sans Mono"
 font-size = 14
 background-opacity = 0.98
+resize-overlay = never
 
 # Linux
 gtk-titlebar = true
